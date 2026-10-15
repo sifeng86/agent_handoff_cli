@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "real_agentctl_engine": true,
+  "real_isolated_git_authority": true,
+  "canonical_read_completed": true,
+  "private_context_read_denied": true,
+  "private_context_absent_from_mcp_output": true,
+  "readonly_inspect_status_and_owned_resume": true,
+  "managed_public_read_after_broker_restart": true,
+  "managed_unapproved_and_env_reads_denied": true,
+  "optional_tool_metadata_dispatch_verified": true,
+  "authentication_required_diagnostic": true,
+  "doppler_cli_is_synthetic": true,
+  "source_index_main_and_exact_owner_verified": true,
+  "model_turn_started": false,
+  "A35_complete": false,
+  "A54_complete": false
+}

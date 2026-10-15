@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "changed_files": [
+    "scripts/provider_bootstrap_smoke.py",
+    "scripts/provider_interaction_smoke.py",
+    "tests/test_provider_bootstrap_smoke.py"
+  ],
+  "fixed_error": "legacy_provider_profile_not_isolated",
+  "legacy_constructor_provider_spawn_possible": false,
+  "interaction_guard_before_output_open": true,
+  "focused_suite": {
+    "tests": 53,
+    "seconds": 8.64,
+    "passed": true,
+    "modules": [
+      "test_provider_bootstrap_smoke",
+      "test_provider_interaction_smoke",
+      "test_provider_auth_smoke",
+      "test_provider_readiness_smoke"
+    ]
+  },
+  "provider_api_calls": 0,
+  "full_suite_rerun": false,
+  "source_archive_refreshed": true,
+  "archive_bytes_verified": {
+    "runtime": 38,
+    "assets": 42,
+    "helpers": 71
+  },
+  "wheel_runtime_resources_unchanged": true,
+  "complete_v1_2": false,
+  "remaining": [
+    "confined supported feature-edit workflow and A54 privacy evidence",
+    "A44/A46 authoritative Doppler fencing/CAS/terminal contract and real provider tests"
+  ]
+}

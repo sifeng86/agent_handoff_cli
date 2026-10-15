@@ -1,0 +1,31 @@
+{
+  "schema": "decision",
+  "record": {
+    "schema_version": 1,
+    "decision_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "category": "takeover",
+    "repository_identity": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "publication_ref": "refs/heads/publication",
+    "observed_head": "cccccccccccccccccccccccccccccccccccccccc",
+    "observed_owner_session": "dddddddddddddddddddddddddddddddd",
+    "destination_identity": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "reason": "Review explicit takeover.",
+    "options": [
+      {
+        "option_id": "takeover",
+        "effect": "Acquire a new owner."
+      },
+      {
+        "option_id": "abort",
+        "effect": "Leave authority unchanged."
+      }
+    ],
+    "invalidated_by": [
+      "authority_head_change",
+      "owner_change",
+      "destination_change",
+      "relevant_secret_state_change"
+    ]
+  },
+  "valid": true
+}

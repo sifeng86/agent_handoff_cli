@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Immutable decision envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "decision_id",
+    "category",
+    "repository_identity",
+    "publication_ref",
+    "observed_head",
+    "observed_owner_session",
+    "destination_identity",
+    "reason",
+    "options",
+    "invalidated_by"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "category": {
+      "enum": [
+        "takeover",
+        "publication_integrity",
+        "authority_binding",
+        "secret_conflict",
+        "secret_deletion"
+      ]
+    },
+    "repository_identity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "publication_ref": {
+      "type": "string",
+      "pattern": "^refs/heads/[^\\u0000-\\u001f\\u007f]+$"
+    },
+    "observed_head": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "observed_owner_session": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "destination_identity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reason": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "options": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "option_id",
+          "effect"
+        ],
+        "properties": {
+          "option_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "effect": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      }
+    },
+    "invalidated_by": {
+      "const": [
+        "authority_head_change",
+        "owner_change",
+        "destination_change",
+        "relevant_secret_state_change"
+      ]
+    },
+    "key_names": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+      }
+    },
+    "secrets_mode": {
+      "enum": [
+        "local-env",
+        "doppler"
+      ]
+    },
+    "upload_authorized": {
+      "type": "boolean"
+    },
+    "secret_manifest": {
+      "$ref": "secrets-manifest.schema.json"
+    },
+    "secrets_project": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+    },
+    "secrets_config": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "anyOf": [
+          {
+            "required": [
+              "key_names"
+            ]
+          },
+          {
+            "required": [
+              "secrets_mode"
+            ]
+          },
+          {
+            "required": [
+              "upload_authorized"
+            ]
+          },
+          {
+            "required": [
+              "secret_manifest"
+            ]
+          },
+          {
+            "required": [
+              "secrets_project"
+            ]
+          },
+          {
+            "required": [
+              "secrets_config"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "required": [
+          "key_names",
+          "secrets_mode",
+          "upload_authorized",
+          "secret_manifest",
+          "secrets_project",
+          "secrets_config"
+        ],
+        "properties": {
+          "category": {
+            "const": "authority_binding"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "secrets_mode"
+        ],
+        "properties": {
+          "secrets_mode": {
+            "const": "local-env"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "upload_authorized": {
+            "const": false
+          },
+          "secrets_project": {
+            "type": "null"
+          },
+          "secrets_config": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "secrets_mode"
+        ],
+        "properties": {
+          "secrets_mode": {
+            "const": "doppler"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "secrets_project": {
+            "type": "string"
+          },
+          "secrets_config": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
+}

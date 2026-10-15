@@ -1,0 +1,753 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Strict Git mutation public result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "command",
+    "status",
+    "operation_id",
+    "published_revision",
+    "code_publication",
+    "ownership",
+    "secrets_shared",
+    "decision",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "command": {
+      "enum": [
+        "init",
+        "acquire",
+        "takeover",
+        "release",
+        "recover-session",
+        "operation",
+        "checkpoint",
+        "done",
+        "handoff"
+      ]
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "not_ready",
+        "decision_required",
+        "rejected",
+        "unknown",
+        "invalid",
+        "unsupported"
+      ]
+    },
+    "operation_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "published_revision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "code_publication": {
+      "enum": [
+        "published",
+        "rejected",
+        "publication_unknown",
+        "local_only",
+        "not_attempted"
+      ]
+    },
+    "ownership": {
+      "enum": [
+        "owned",
+        "released",
+        "fenced",
+        "ownership_pending",
+        "unowned",
+        "unknown"
+      ]
+    },
+    "secrets_shared": {
+      "enum": [
+        true,
+        false,
+        "partial",
+        "unknown",
+        null
+      ]
+    },
+    "decision": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "decision.schema.json"
+            },
+            {
+              "properties": {
+                "schema_version": {},
+                "decision_id": {},
+                "category": {
+                  "const": "takeover"
+                },
+                "repository_identity": {},
+                "publication_ref": {},
+                "observed_head": {},
+                "observed_owner_session": {},
+                "destination_identity": {},
+                "reason": {},
+                "options": {},
+                "invalidated_by": {}
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      ]
+    },
+    "next_action": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "observed_revision": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "preservation_handle": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "test_status": {
+      "const": "unknown"
+    },
+    "secrets_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "completed",
+            "not_ready",
+            "decision_required",
+            "rejected",
+            "unknown",
+            "invalid",
+            "unsupported"
+          ]
+        },
+        "secret_operation_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "plan_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "decision": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "decision.schema.json"
+            }
+          ]
+        },
+        "next_action": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "availability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "available_keys",
+            "required_missing",
+            "unsupported_keys",
+            "secrets_shared"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "completed",
+                "not_ready"
+              ]
+            },
+            "available_keys": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+              },
+              "uniqueItems": true
+            },
+            "required_missing": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+              },
+              "uniqueItems": true
+            },
+            "unsupported_keys": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+              },
+              "uniqueItems": true
+            },
+            "secrets_shared": {
+              "const": false
+            },
+            "next_action": {
+              "type": "string"
+            }
+          }
+        },
+        "conflicts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "key",
+              "category"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+              },
+              "category": {
+                "enum": [
+                  "secret_conflict",
+                  "secret_deletion",
+                  "scope_grant_required"
+                ]
+              }
+            }
+          }
+        },
+        "verified_keys": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+          },
+          "uniqueItems": true
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "init"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {
+            "type": "null"
+          },
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {},
+          "observed_revision": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                },
+                "code_publication": {
+                  "const": "not_attempted"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "observed_revision"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "acquire"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {
+            "type": "null"
+          },
+          "decision": {},
+          "next_action": {},
+          "preservation_handle": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "decision": {
+                  "type": "object"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "status": {
+                  "const": "decision_required"
+                },
+                "decision": {
+                  "properties": {
+                    "observed_head": {
+                      "type": "string"
+                    },
+                    "observed_owner_session": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "preservation_handle"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "takeover"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {
+            "type": "null"
+          },
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {}
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "release"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {
+            "type": "null"
+          },
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {}
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "recover-session"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {
+            "type": "null"
+          },
+          "published_revision": {},
+          "code_publication": {
+            "const": "not_attempted"
+          },
+          "ownership": {},
+          "secrets_shared": {
+            "type": "null"
+          },
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {},
+          "observed_revision": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "observed_revision"
+              ],
+              "properties": {
+                "ownership": {
+                  "const": "owned"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "operation"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {
+            "not": {
+              "const": "completed"
+            }
+          },
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {
+            "type": "null"
+          },
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {}
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "checkpoint"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {
+            "type": "null"
+          },
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {},
+          "preservation_handle": {},
+          "test_status": {}
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "done"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {
+            "type": "null"
+          },
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {},
+          "preservation_handle": {},
+          "test_status": {}
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "handoff"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {},
+          "preservation_handle": {},
+          "test_status": {},
+          "secrets_result": {}
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "code_publication": {
+            "const": "published"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "operation_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$"
+          },
+          "published_revision": {
+            "type": "string",
+            "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "published_revision": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "code_publication": {
+            "enum": [
+              "rejected",
+              "local_only"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "operation_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "code_publication": {
+            "const": "rejected"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "const": "rejected"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "code_publication": {
+            "const": "publication_unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "enum": [
+              "unknown",
+              "invalid"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "ownership": {
+            "const": "owned"
+          },
+          "command": {
+            "not": {
+              "const": "recover-session"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "code_publication": {
+            "const": "published"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "completed"
+          },
+          "command": {
+            "enum": [
+              "acquire",
+              "takeover",
+              "release",
+              "checkpoint",
+              "handoff",
+              "done"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "code_publication": {
+            "enum": [
+              "published",
+              "local_only"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "ownership": {
+            "const": "released"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "code_publication": {
+            "const": "published"
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$comment": "Publication claims require operation/revision evidence. Unknown output failures may lack an operation ID and must be resolved from durable private evidence. Test status never inferred from summary text. Runtime validates nested secret summary and decision scope too."
+}

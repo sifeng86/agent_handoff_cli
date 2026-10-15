@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-14",
+  "full_v1_2_complete": false,
+  "full_suite": {
+    "command": "PYTHONPATH=src:tests python3 -m unittest discover -s tests -q",
+    "tests": 425,
+    "seconds": 121.451,
+    "passed": true,
+    "explicit_sandbox_approval": true
+  },
+  "controller_tests": {
+    "tests": 14,
+    "seconds": 1.861,
+    "passed": true,
+    "native_events": "synthetic",
+    "engine_and_git": "real local fixtures"
+  },
+  "historical_feature_turn_reverified": {
+    "passed": true,
+    "new_api_calls": 0,
+    "scope": "original native trace, engine log, actual Git/source/index/mainline/owner state and every private edit journal"
+  },
+  "package": {
+    "artifact_root": "/tmp/agent-handoff-package-kad83jzf",
+    "artifacts": [
+      {
+        "name": "agent_handoff-0.1.0-py3-none-any.whl",
+        "sha256": "8d1c3b92111d6130026986a6f026df9cc5dfd86f3bb256d9be727a6b2edc23c6"
+      },
+      {
+        "name": "agent_handoff-0.1.0.tar.gz",
+        "sha256": "810f4f64e57c0ea11635026e1b9b463fec67aac5673ac0281e842c0cebea61c9"
+      }
+    ],
+    "wheel_and_sdist_install_smokes_passed": true,
+    "verified_install_sdist_sha256": "cd54a2b6cdecc9ec4242da71688ec0a39e400dad755f0b6acd80a8acbda2f2f3",
+    "delivery_sdist_refresh": "documentation only after installation smoke; all runtime, helper, test, schema and template payload bytes identical to installed verified archive and current source",
+    "installed_flows": [
+      "init",
+      "acquire",
+      "recover-session",
+      "release",
+      "host backup/verify-backup/restore/resolve",
+      "authority propose/apply/fenced-source/target lifecycle"
+    ],
+    "resource_count": 42,
+    "host_scope": "selected Linux firewall/git/network/package_sources/provider/shell/ssh/vpn unchanged; services/users_security unverifiable",
+    "previous_differing_artifacts_preserved": true
+  },
+  "source_sha256": {
+    "scripts/provider_mcp_feature_smoke.py": "d8807f7b80769a9d0ec2917272090adb21f6eea89f617ba36df5e71495321f98",
+    "scripts/provider_feature_mcp_profile.py": "315771c2eb8731233353d4698bb9f15eb4801e3689a4a9dabf45e68fe5c2ebea",
+    "scripts/provider_feature_broker.py": "893a4fcac3befcc3b7bfc7fc9f713e3746d65f3826cf6e46bbbdfa1e8bfabeb1",
+    "scripts/provider_project_files.py": "866789f3c4cb908b8f0859713ec7620c14c08c9604f69dabaaac52bca902853c",
+    "tests/test_provider_mcp_feature_smoke.py": "d80cf44f4e66dc1eba83a8f9824ce93172bc822ebc9a4951e4902a8c44ef9491"
+  },
+  "remaining": [
+    "A44/A46 authoritative Doppler write, fencing, conditional-update and terminal-operation contract plus actual provider cases",
+    "A54 remaining actual provider failure-channel evidence"
+  ]
+}

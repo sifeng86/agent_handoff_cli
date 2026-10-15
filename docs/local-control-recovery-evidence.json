@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-13",
+  "scope": "WSL/Linux local Git and local-env control/recovery; no live provider write claim",
+  "source_sha256": {
+    "src/agent_handoff/secrets/service.py": "858b86044e5d1c2677a3732d25c90710809424e3302d281471328afe862abf79",
+    "src/agent_handoff/secrets/journal.py": "ad4f0549a8bd777cd9b24fdc2fb7fa30c6745e9fc53717f22b33782fcf393544",
+    "src/agent_handoff/secrets/local_env.py": "5fdffe08ad1baabb722a73a90f19aa31d3365b87fae79b60ba69c3561792e4ed",
+    "schemas/secret-journal.schema.json": "35ea6e8ff14dbaec059bc96aa79e1f07c1a7ad17e058eab07f20f8b6e2251bdf",
+    "tests/test_secret_service.py": "7ab5db695a391a826ed6e929bc0dba6abcd66d58adbd15b992e4263d71d12363",
+    "tests/test_session_concurrency.py": "97e5ac643a986ec26ef2e7d927e9d301d7ebf1e6f7f8098174854091e5b1f4a2",
+    "tests/test_publication.py": "b4788079add4a5568f739d9320949b67afd1f86945ae89d966b08d135644b26f",
+    "tests/test_integrity_records.py": "01215a09998b47df62cd6975e35ff2e029aca5dada784b7b8b83302b71bef3f1"
+  },
+  "verification": {
+    "full_suite_tests": 252,
+    "full_suite_seconds": 83.301,
+    "full_suite_log_sha256": "f11fd42574c086b34d3dc9c5c500d62c4f812ff028289d90d392eed39041437c",
+    "post_full_suite_change": "test-only strengthening of A34; separately verified",
+    "focused_local_secrets_and_concurrency_tests": 50,
+    "focused_seconds": 26.355,
+    "focused_log_sha256": "c0ee817b6fabb4dc4986de0b2a121ec426c1e53afe1db087dd39d035192f1a02",
+    "post_suite_A34_tests": 1,
+    "post_suite_A34_log_sha256": "6e17cc8d456166c208bb46bbd20a0099813cda4e04e71d4f27ace085792056c4"
+  },
+  "outcomes": [
+    "Ordinary dotenv and PEM local patches share durable intent/resolve path",
+    "Journal before local rename; pending blocks fresh apply",
+    "Actual fork exit77 after rename/fsync; restarted resolve does not replay",
+    "Editor divergence retained; local result never claims shared convergence",
+    "Manifest scope corruption rejected by runtime validator; empty local file maps accepted",
+    "A21/A22/A24/A29 exact local integrity/concurrency postconditions verified",
+    "A34 stale takeover lifecycle and no-effects verified"
+  ],
+  "limitations": [
+    "No physical power-loss/Windows-native claim",
+    "No generic hostile-editor filesystem CAS claim",
+    "No live Doppler fence/terminal-write or hosting in-flight race claim",
+    "Agent UX A31/A35 and A17 affirmative backend quiescence remain open"
+  ]
+}

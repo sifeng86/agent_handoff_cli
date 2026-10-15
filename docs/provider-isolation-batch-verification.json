@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "offline_focused_runs": [
+    {
+      "scope": "broker, Landlock child, MCP profile, and reviewed controller",
+      "tests_passed": 48,
+      "execution": "one combined focused run"
+    },
+    {
+      "scope": "A54 secret disclosure matrix",
+      "tests_passed": 6,
+      "execution": "separate focused run"
+    }
+  ],
+  "installed_engine_evidence": "docs/provider-broker-engine-evidence.json",
+  "installed_engine_scope": {
+    "real_agentctl": true,
+    "isolated_local_git": true,
+    "managed_public_read_after_broker_restart": true,
+    "private_context_and_unapproved_reads_denied": true,
+    "synthetic_doppler_cli": true,
+    "model_turn_started": false
+  },
+  "a54_classification": "incomplete",
+  "open_gates": [
+    "A35",
+    "A44",
+    "A46",
+    "A54",
+    "Design v1.2 \u00a725 full host/provider gates"
+  ],
+  "full_suite_and_package": "371 combined scope and both installation routes passed within declared limits",
+  "prior_auto_review_rejection": {
+    "model": "claude-haiku-5-5",
+    "process_started": false,
+    "reason": "auto-review rejected before process start",
+    "api_call_made": false
+  },
+  "later_focused_runs": [
+    {
+      "scope": "MCP compatibility broker/profile",
+      "tests_passed": 32
+    },
+    {
+      "scope": "Primary init/telemetry regression plus controller",
+      "tests_passed": 21
+    },
+    {
+      "scope": "controller failure preservation",
+      "tests_passed": 12
+    }
+  ],
+  "full_suite": {
+    "tests": 371,
+    "seconds": 140.518,
+    "passed": false,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0,
+    "returncode": 1,
+    "passed_methods": 368,
+    "failure_cause": "stdin-based runner cannot be imported by multiprocessing spawn; 3 affected concurrency methods"
+  },
+  "targeted_runner_correction": {
+    "tests": 3,
+    "seconds": 2.186,
+    "passed": true,
+    "entry": "python3 -m unittest with 3 exact test methods",
+    "source_changes_after_full_suite": false
+  },
+  "combined_371_test_scope_passed": true,
+  "single_exit_zero_full_suite": false,
+  "complete_v1_2": false,
+  "package_verification": {
+    "passed": true,
+    "installations": [
+      "wheel",
+      "sdist"
+    ],
+    "runtime_modules": 38,
+    "resource_assets": 42,
+    "sdist_python_helpers": 70,
+    "delivery_report": "dist/package-verification.json",
+    "selected_host_entries_changed": false,
+    "services_and_users_security_unverifiable": true,
+    "artifact_root": "/tmp/agent-handoff-package-b5gw895q",
+    "instruction_clarification_included": true
+  },
+  "provider_attempts": [
+    {
+      "model": "claude-haiku-5-5",
+      "process_started": true,
+      "api_call_made": true,
+      "user_authorized_once": true,
+      "mechanical_scenario_passed": false,
+      "record": "docs/claude-mcp-auth-failed-evidence.json",
+      "no_automatic_retry": true
+    },
+    {
+      "model": "claude-haiku-5-5",
+      "process_started": true,
+      "api_call_made": true,
+      "user_authorized_once": true,
+      "mechanical_scenario_passed": false,
+      "record": "docs/claude-mcp-auth-second-evidence.json",
+      "no_automatic_retry": true
+    }
+  ],
+  "doppler_write_contract_investigation": "docs/doppler-write-contract-investigation.md",
+  "canonical_instruction_clarification": {
+    "change": "explicit separate inspect/status before resume; original acceptance requirement retained",
+    "focused_tests": 89,
+    "seconds": 8.562,
+    "passed": true,
+    "actual_offline_engine_passed": true,
+    "actual_model_run_after_change": false
+  },
+  "current_api_authorizations_consumed": 2,
+  "post_clarification_model_execution_pending_authorization": true,
+  "later_A37_review": {
+    "snapshot_module_tests": 13,
+    "worker_run_passed": true,
+    "primary_strengthened_active_step_removal": true,
+    "primary_targeted_method_passed": true,
+    "subcases": 4,
+    "scope": "checkpoint/handoff refuse missing cursor or deletion of the actually committed active step; no publication or pending intent, owner/state/source/index retained",
+    "runtime_source_changed": false
+  }
+}

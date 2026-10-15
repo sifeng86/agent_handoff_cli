@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-13T05:11:11.769425+00:00",
+  "backend": "GitHub over SSH",
+  "authority": "git@github.com:sifeng86/agent_handoff_cli.git",
+  "script_sha256": "6da4f37a125c31ca0851a6b424b7e5b0696dfd047290fa053ba61ef16dd3e29a",
+  "runtime_source_sha256": "7ae9f899e80471774362db68a52b518ed37bc9be7e0e3fd15d5aa17a83beb299",
+  "requirement_scope": [
+    "A06",
+    "A07",
+    "A08",
+    "A11",
+    "A13",
+    "A14 explicit false intent",
+    "A39"
+  ],
+  "local_suite": {
+    "tests": 215,
+    "result": "passed",
+    "duration_seconds": 78.075
+  },
+  "execution": {
+    "passed": true,
+    "publication_ref": "refs/heads/agent-handoff-plan-smoke-94194d9381c8467a95287db37a4195eb",
+    "branch_deleted": true,
+    "mainline_unchanged": true,
+    "mainline_revision": "f95c4443da110f6dcb2acaef77264451a812befc",
+    "git_version": "git version 2.55.0",
+    "python_version": "3.12.3",
+    "provider": "git-remote",
+    "provider_version": null,
+    "initial_revision": "845cb16459b5e5e50e76c9671aef3995a9661dab",
+    "writer_a_checkpoint": "6b2c1016ef17a264db1a4db4565efb5f9311e257",
+    "writer_a_release": "9400df3b5f209fd37937720f969260d48465e60e",
+    "writer_a_reacquire": "b83c00b66e36dff5e5d30e8dddbdb75806d34c9c",
+    "takeover_revision": "b06d2c7c3157bc2b0afe1c7c47955caeb1c11b2d",
+    "writer_b_checkpoint": "a440c7a7c4068cd2b25e05408679fc13b7db5caa",
+    "handoff_revision": "3bb987b31a60cd3e3dc55c967c2b2816c5432a97",
+    "writer_b_reacquire": "a4291d88791db2bd84a839266dd375d626727eab",
+    "done_revision": "f76ec9c3e16e21f58c14831182bbac939443691a",
+    "final_revision": "dd1059b7431d970a5b5d12bc5299289b250d81f6",
+    "writer_a_status": "completed",
+    "takeover_status": "completed",
+    "checkpoint_status": "completed",
+    "handoff_status": "completed",
+    "done_status": "completed",
+    "fenced_operations": [
+      "checkpoint",
+      "release"
+    ],
+    "plan_release_preserved": true,
+    "takeover_fenced_old_writer": true,
+    "handoff_preserved_working_cursor": true,
+    "done_completed_plan": true,
+    "done_retained_owner": true
+  },
+  "independent_readonly_confirmation": {
+    "mainline_revision": "f95c4443da110f6dcb2acaef77264451a812befc",
+    "publication_revision": null,
+    "mainline_unchanged": true,
+    "branch_absent": true
+  },
+  "limitations": [
+    "Sequential post-takeover fencing; no in-flight old-writer transport race.",
+    "A12 snapshot restart/materialization is covered separately by local tests, not this hosting run.",
+    "Explicit false release intent only; omitted intent and true intent require separate evidence.",
+    "No actual network fault, physical crash, Windows, fresh provider, or Doppler write-fencing proof.",
+    "Hosting server version is unavailable; provider_version remains null."
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "design": "agent-handoff-runtime-solution-design-v1.2",
+  "section": "25",
+  "review_date": "2026-10-15",
+  "overall_status": "verified_implementation_baseline_basic_contract",
+  "classification_legend": {
+    "proved_for_required_scope": "Observed assertions/evidence satisfy this gate within the expressly stated fixture and platform scope.",
+    "partial": "There is relevant passing evidence, but at least one explicit part or required breadth remains unproved.",
+    "incomplete": "A required acceptance branch is missing, failed, or deliberately unavailable.",
+    "unverified": "No adequate executed evidence establishes the gate."
+  },
+  "gates": [
+    {
+      "id": 1,
+      "requirement": "A01-A63 each have automated or repeatable acceptance evidence.",
+      "status": "proved_for_required_scope",
+      "evidence": [
+        "All six audits cover 63 unique A01-A63 rows, with no missing or open classifications; referenced test functions exist.",
+        "Current 444-test suite passed131.929s; actual basic Doppler A44/A46 and public-output proof is recorded in docs/doppler-basic-evidence.json."
+      ],
+      "gaps": [],
+      "next_step": "Preserve the stated basic contract and scoped evidence in future changes."
+    },
+    {
+      "id": 2,
+      "requirement": "At least one real Git hosting backend validates conditional publication semantics.",
+      "status": "proved_for_required_scope",
+      "evidence": [
+        "docs/hosting-cas-evidence.md records an authorized GitHub run: expected-absent initialization, competing writers using the same expected revision, one rejection and one publication, exact initial parent, and unchanged mainline.",
+        "docs/hosting-plan-evidence.md and docs/hosting-resume-evidence.md record additional scoped real-host lifecycle and resume preservation checks."
+      ],
+      "gaps": [
+        "This proves the exercised GitHub refs and scenarios, not every branch policy, transport fault, host, or A01-A63 hosting variant."
+      ],
+      "next_step": "Retain the scoped claim; add hosting cases only where the row or protocol requires them, especially unresolved in-flight transport cases."
+    },
+    {
+      "id": 3,
+      "requirement": "Ubuntu/WSL smoke tests pass.",
+      "status": "proved_for_required_scope",
+      "evidence": [
+        "docs/wsl-smoke-evidence.md/json records Ubuntu 24.04 on a Microsoft WSL kernel, Python 3.12, a 216-test suite, and installed wheel/sdist lifecycle smoke.",
+        "docs/provider-isolation-batch-verification.json records wheel and sdist installation checks; its later 371-test run had 368 methods pass and three multiprocessing-stdin failures. The three affected methods passed a targeted standard unittest invocation.",
+        "Current delivered wheel/sdist lifecycle, host recovery and authority-transition smokes passed in WSL; see dist/package-verification.json. Both include the clarified instructions. Later A37 changes are tests/docs only.",
+        "docs/auth-support-batch-verification.json records one corrected standard-entry full suite:381/381 passed113.293s, plus wheel/sdist installed lifecycle/host-recovery/authority-transition smokes; original umask-sensitive fixture failure retained.",
+        "docs/basic-release-verification.json: current basic wheel and sdist installation/lifecycle/recovery/transition smokes passed; full current suite pending.",
+        "Current 444/444 full unittest suite passed131.929s; current basic wheel/sdist installation and preservation passed, docs/basic-release-verification.json."
+      ],
+      "gaps": [
+        "This verifies Ubuntu/WSL in the documented fixtures; it does not add native Windows or macOS support."
+      ],
+      "next_step": "Keep Ubuntu/WSL scope explicit; repeat full-suite verification only after a substantial implementation batch, following user policy."
+    },
+    {
+      "id": 4,
+      "requirement": "A fresh supported Agent session bootstraps correctly before its first project mutation.",
+      "status": "proved_for_required_scope",
+      "evidence": [
+        "docs/provider-bootstrap-evidence.md and docs/claude-bootstrap-evidence.md retain successful fresh Codex and Claude Haiku sessions with canonical instruction discovery, readonly inspection, ready/owned resume before managed app.py mutation, and independent source/ref/owner checks.",
+        "The later exclusive-MCP A35 record docs/claude-mcp-auth-second-evidence.json proves owned resume and a typed auth diagnostic, but explicitly fails the full workflow because readonly inspection before resume was not proved. The earlier MCP attempt also failed its reads.",
+        "docs/claude-mcp-auth-evidence.json proves the latest readonly A35 auth handoff: canonical read, inspect, typed diagnostic, external-login-only request, unchanged free owner and context privacy.",
+        "docs/remaining-gates-review.json confirms historical Codex/Claude first-mutation evidence meets the quoted scenario, without an invented every-profile replay condition. The later A54 review found those native-tool launch paths still expose private-root; they now fail closed before model execution.",
+        "docs/feature-workflow-evidence.json records an independently authorized Haiku 5.5 exclusive-MCP feature turn: canonical read, inspection, owned resume, conditional managed app.py mutation, preserved source/index/mainline/owner and absent context capability. Original native trace, engine log, actual Git state and write journal passed the stricter controller again offline on 2026-10-14 without an API replay."
+      ],
+      "gaps": [
+        "Evidence is scoped to the fixed Haiku three-tool profile, local Git and synthetic Doppler; it does not establish real Doppler uploads or a confined Codex profile. Legacy native-tool constructors remain disabled."
+      ],
+      "next_step": "Retain the approved feature-turn evidence and current controller verification; do not replay the provider solely for this gate."
+    },
+    {
+      "id": 5,
+      "requirement": "The secrets adapter passes conflict, timeout, and permission tests against an isolated Doppler configuration.",
+      "status": "proved_for_required_scope",
+      "evidence": [
+        "docs/doppler-basic-evidence.json: actual isolated writes, different-key merge, stale-plan rejection, multiline readback and baseline advancement; two disposable keys cleaned.",
+        "Injected acknowledgement loss after actual accepted write resolves from current state without replay; invalid-token read rejected. This is bounded fault injection/authentication evidence, not actual outage or scoped permission403."
+      ],
+      "gaps": [],
+      "next_step": "Preserve the stated basic contract and scoped evidence in future changes."
+    },
+    {
+      "id": 6,
+      "requirement": "Logs and model-visible output pass secret-leak tests.",
+      "status": "proved_for_required_scope",
+      "evidence": [
+        "tests/test_secret_leak_matrix.py has six focused local/fake-provider methods covering public CLI/result/error channels, private journal diagnostics, and all reachable public Git objects for its scenarios.",
+        "docs/provider-broker-engine-evidence.json records real installed-engine denial of context and unapproved-file reads without a model turn.",
+        "Retained failed provider records include earlier context disclosure; the later successful A63 trace is scoped to one missing-secret stop and does not erase those failures.",
+        "The third fresh MCP auth trace passed raw/decoded context scans, exact registry and source/settings/host preservation; this does not erase previous failures or close the full matrix.",
+        "docs/feature-workflow-evidence.json establishes confined three-tool feature behavior; docs/a54-model-bound-error-verification.json records sanitized synthetic backend-error propagation. Legacy native-tool launch constructors remain disabled.",
+        "Current live basic service results passed raw/escaped value scan; full suite444/444 includes CLI/error/journal/Git and supported model-bound error leak regressions."
+      ],
+      "gaps": [],
+      "next_step": "Preserve the stated basic contract and scoped evidence in future changes."
+    },
+    {
+      "id": 7,
+      "requirement": "Takeover and publication-integrity decisions have stale-decision tests.",
+      "status": "proved_for_required_scope",
+      "evidence": [
+        "tests/test_publication.py::test_stale_decision asserts code 3, stale decision lifecycle, no push, and unchanged post-release ref/owner/private trust/source state when an older takeover decision is applied.",
+        "tests/test_integrity_records.py stale integrity decision coverage changes the remote HEAD after proposal and verifies the stale choice is rejected without publication or local-state mutation."
+      ],
+      "gaps": [
+        "The tests establish local runtime behavior; they do not claim every hosting transport or provider scenario."
+      ],
+      "next_step": "No new gate-specific work is required beyond preserving these exact assertions in subsequent regression runs."
+    },
+    {
+      "id": 8,
+      "requirement": "Project semantic conflicts do not enter the runtime decision engine.",
+      "status": "proved_for_required_scope",
+      "evidence": [
+        "tests/test_decisions.py::test_A32_A33_project_semantics_cannot_enter_runtime_decisions exercises test-bug/product-feature categories and verifies they are not runtime decision choices or mutations."
+      ],
+      "gaps": [
+        "This is a local category-boundary test; no broader fresh-agent UX claim is made because §25.8 does not require one."
+      ],
+      "next_step": "Preserve this separation; do not add product/test semantics to runtime decision categories."
+    },
+    {
+      "id": 9,
+      "requirement": "Host installation/recovery tests prove no arbitrary damage to existing VPN, network, SSH, or provider configuration.",
+      "status": "proved_for_required_scope",
+      "evidence": [
+        "tests/test_host_guard.py and docs/host-preservation.md exercise selected Linux configuration paths and fail-closed inspection.",
+        "docs/installer-repair-evidence.json records one isolated Linux prefix launcher repair with verified healthy and pre-repair backups, only the approved launcher content repaired, and unrelated prefix entries preserved; no comprehensive global host snapshot was performed.",
+        "Primary reviewed docs/remaining-gates-review.json against exact §25.9: named selected VPN/network/SSH/provider categories preserved in actual install/recovery tests. Full Windows/live-service/global-state certification is not demanded by this gate."
+      ],
+      "gaps": [
+        "Selected Linux configuration/isolated repair scope only; future changes that touch broader §5.2 categories require scoped guards."
+      ],
+      "next_step": "Preserve existing guarded minimum-change installer/recovery behavior; no broader snapshot is required for the current isolated operations."
+    },
+    {
+      "id": 10,
+      "requirement": "Unsupported provider/platform/backend paths fail closed or are explicitly marked unsupported; there is no silent safety downgrade.",
+      "status": "proved_for_required_scope",
+      "evidence": [
+        "Basic Doppler mode explicitly reports no strong provider fencing/conditional-write/terminal capability; user-approved simpler contract documented, not a silent downgrade.",
+        "docs/provider-tool-isolation-design.md and the Landlock evidence explicitly limit the sandbox and deny unsupported execution rather than claiming network or full filesystem isolation.",
+        "docs/support-capability-matrix.md and tests/test_git_unsupported_boundaries.py record actual SHA256/Gitlink/root-and-nested-LFS rejections plus adversarial pre-push/fsmonitor controls; profile tests reject canonicalModel mismatch.",
+        "README and support matrix distinguish Python>=3.12 installation floor from verified Python3.12. Unrestricted provider smoke constructors now fail closed; no unsafe fallback."
+      ],
+      "gaps": [
+        "Native Windows/macOS, SHA256 repositories, submodules/LFS and unsafe native-tool profiles remain unsupported as documented."
+      ],
+      "next_step": "Keep supported/unsupported boundaries explicit; do not substitute disabled required features for v1.2 completion."
+    }
+  ],
+  "acceptance_scope": {
+    "coverage": "A01-A63, indexed by six requirement-level audits",
+    "audit_files": [
+      "docs/ownership-acceptance-audit.json (A01-A10)",
+      "docs/snapshot-recovery-acceptance-audit.json (A11-A20)",
+      "docs/integrity-preservation-acceptance-audit.json (A21-A30)",
+      "docs/decision-plan-acceptance-audit.json (A31-A40)",
+      "docs/secrets-acceptance-audit.json (A41-A54)",
+      "docs/security-bootstrap-handoff-acceptance-audit.json (A55-A63)"
+    ],
+    "currently_open_rows": [],
+    "important_scope_limits": [
+      "Local/fake-provider evidence does not prove Doppler write fencing or terminal behavior.",
+      "Historical successful A59 sessions and the A63 missing-secret stop are scenario-specific, not universal provider evidence.",
+      "A58 is one isolated Linux launcher repair; it is not a full host-configuration preservation certificate."
+    ]
+  },
+  "decision": "Verified implementation baseline for the explicitly approved basic Doppler contract on the documented Ubuntu/WSL scope. All ten gates have scoped evidence; historical failures and unsupported boundaries remain retained.",
+  "scope_amendment": "User approved basic Doppler writes/current-state confirmation. Strong provider CAS/fencing/terminal API requirements are superseded."
+}

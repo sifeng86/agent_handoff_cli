@@ -1,0 +1,14 @@
+{
+  "schema": "secrets-manifest",
+  "record": {
+    "schema_version": 1,
+    "keys": {
+      "CERT": {
+        "classification": "file-backed",
+        "required": true,
+        "file": "keys/../outside.pem"
+      }
+    }
+  },
+  "valid": false
+}

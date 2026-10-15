@@ -1,0 +1,416 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Strict resume public result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "command",
+    "status",
+    "operation_id",
+    "published_revision",
+    "code_publication",
+    "ownership",
+    "secrets_shared",
+    "decision",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "command": {
+      "const": "resume"
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "ready",
+        "not_ready",
+        "decision_required",
+        "rejected",
+        "unknown",
+        "invalid",
+        "unsupported"
+      ]
+    },
+    "operation_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "published_revision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "code_publication": {
+      "enum": [
+        "published",
+        "rejected",
+        "publication_unknown",
+        "local_only",
+        "not_attempted"
+      ]
+    },
+    "ownership": {
+      "enum": [
+        "owned",
+        "released",
+        "fenced",
+        "ownership_pending",
+        "unowned",
+        "unknown"
+      ]
+    },
+    "secrets_shared": {
+      "enum": [
+        null,
+        false
+      ]
+    },
+    "decision": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/takeover"
+        }
+      ]
+    },
+    "next_action": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "observed_revision": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "managed_checkout": {
+      "type": "string",
+      "pattern": "^/[^\\u0000-\\u001f]*$"
+    },
+    "preservation_handle": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "secret_availability": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "required_missing"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "completed",
+                "not_ready"
+              ]
+            },
+            "required_missing": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+              },
+              "uniqueItems": true
+            },
+            "available_keys": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+              },
+              "uniqueItems": true
+            },
+            "unsupported_keys": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+              },
+              "uniqueItems": true
+            },
+            "secrets_shared": {
+              "const": false
+            },
+            "next_action": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "ready"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "observed_revision",
+          "managed_checkout",
+          "preservation_handle"
+        ],
+        "properties": {
+          "ownership": {
+            "const": "owned"
+          },
+          "decision": {
+            "type": "null"
+          },
+          "secret_availability": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "allOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status",
+                      "required_missing"
+                    ],
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "completed",
+                          "not_ready"
+                        ]
+                      },
+                      "required_missing": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                        },
+                        "uniqueItems": true
+                      },
+                      "available_keys": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                        },
+                        "uniqueItems": true
+                      },
+                      "unsupported_keys": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                        },
+                        "uniqueItems": true
+                      },
+                      "secrets_shared": {
+                        "const": false
+                      },
+                      "next_action": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  {
+                    "required": [
+                      "available_keys",
+                      "unsupported_keys",
+                      "secrets_shared"
+                    ],
+                    "properties": {
+                      "status": {
+                        "const": "completed"
+                      },
+                      "required_missing": {
+                        "maxItems": 0
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "code_publication": {
+            "enum": [
+              "not_attempted",
+              "published"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "type": "object"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "preservation_handle"
+        ],
+        "properties": {
+          "status": {
+            "const": "decision_required"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "code_publication": {
+            "const": "published"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "operation_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$"
+          },
+          "published_revision": {
+            "type": "string",
+            "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "published_revision": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "takeover": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Immutable decision envelope",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "decision_id",
+        "category",
+        "repository_identity",
+        "publication_ref",
+        "observed_head",
+        "observed_owner_session",
+        "destination_identity",
+        "reason",
+        "options",
+        "invalidated_by"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "category": {
+          "const": "takeover"
+        },
+        "repository_identity": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "publication_ref": {
+          "type": "string",
+          "pattern": "^refs/heads/[^\\u0000-\\u001f\\u007f]+$"
+        },
+        "observed_head": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "type": "string"
+        },
+        "observed_owner_session": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "type": "string"
+        },
+        "destination_identity": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "reason": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "option_id",
+              "effect"
+            ],
+            "properties": {
+              "option_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "effect": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          }
+        },
+        "invalidated_by": {
+          "const": [
+            "authority_head_change",
+            "owner_change",
+            "destination_change",
+            "relevant_secret_state_change"
+          ]
+        }
+      }
+    }
+  },
+  "$comment": "Ready requires currently proven ownership, preserved source, revision, managed checkout and required local material. Runtime validates canonical paths and nested availability; resume does not assert shared-secret convergence."
+}

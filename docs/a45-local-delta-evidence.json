@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "acceptance_id": "A45",
+  "classification": "local_proof_complete_live_provider_delta_unverified",
+  "tests": [
+    "test_A45_remote_only_single_key_delta_applies_locally_then_advances_baseline",
+    "test_A45_remote_only_delta_fault_before_baseline_keeps_previous_baseline"
+  ],
+  "focused_command": "PYTHONPATH=src:tests python3 -m unittest test_secret_service -q",
+  "focused_test_count": 45,
+  "focused_seconds": 24.873,
+  "focused_exit_code": 0,
+  "test_source_sha256": "4a597a0f2c59dcd77c72bfd37fcd54cb689aa9236063044994e41d644f5fe45f",
+  "focused_log_sha256": "893dbac75d3b8ceeae5191d57d3d9303eb092abc204ead75e11c8dfb63dc0e5b",
+  "provider": "VerifiedFake; not live Doppler",
+  "fault_scope": "Interruption after local/remote verification but before baseline persistence; not a verification-failure test",
+  "primary_reviewed": true,
+  "worker_status": "GPT-6-Luna stopped at account usage limit; Primary inspected final edits, completed focused verification and audit prose."
+}

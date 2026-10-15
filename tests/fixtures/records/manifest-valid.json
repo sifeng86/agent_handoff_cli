@@ -1,0 +1,13 @@
+{
+  "schema": "secrets-manifest",
+  "record": {
+    "schema_version": 1,
+    "keys": {
+      "A": {
+        "classification": "shared",
+        "required": true
+      }
+    }
+  },
+  "valid": true
+}

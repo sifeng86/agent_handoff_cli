@@ -1,0 +1,13 @@
+# Fresh Codex bootstrap evidence
+
+On 2026-10-13, a fresh `codex exec` session using GPT-6-Luna read the exact canonical instructions, performed readonly inspection, created a private context and obtained `resume ready/owned` before changing managed `app.py`. Independent review of the retained actual JSONL and installed-CLI records confirmed the tool order, original source HEAD/clean worktree, exact managed feature result, unchanged publication revision after acquisition and valid session capability. The [evidence record](provider-bootstrap-evidence.json) includes code/wrapper/template hashes, provider version and scoped outcomes; raw traces and private context remain in protected temporary evidence.
+
+The original harness rejected valid readonly CLI forms and then owned post-resume verification work. Those verifier defects were corrected and regression-tested; the actual retained session was revalidated rather than replacing its evidence with model self-report. This establishes A59 for the recorded Codex session, not universal success across providers or every startup condition. Its original index byte digest was not retained; future runs now persist that private before-state proof.
+
+Reproduce with an independently verified installed CLI:
+
+The former native-tool reproduction command is currently disabled with `legacy_provider_profile_not_isolated`. It gave the model private-root read access; historical evidence remains retained, and a confined replacement is pending.
+
+The feature prompt supplies approved setup facts and the requested code change; bootstrap steps come from the unchanged AGENTS/canonical instruction assets. The harness preserves workspace-write sandboxing, stores logs/backups in a private fixture and validates real CLI results and capability records. A native Codex startup may save the fixture trust table; cleanup restores only that newly added table, compares original bytes and refuses unrelated/concurrent setting changes. Saved-auth changes also fail the invocation check. Host inode/ctime and all-service/security preservation are separate requirements.
+
+[OpenAI AGENTS discovery](https://learn.chatgpt.com/docs/agent-configuration/agents-md), [noninteractive JSONL](https://learn.chatgpt.com/docs/non-interactive-mode) and [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference) were checked against local codex-cli 0.162.0-alpha.17.2. Provider fixtures are genuine API-backed sessions; synthetic verifier tests are not provider evidence. The full suite passed 241 tests. Claude Haiku 5.5 now has a separate [verified bootstrap record](claude-bootstrap-evidence.md). The complete privacy/backend fault matrices and Doppler fencing remain open.

@@ -1,0 +1,270 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Strict inspection and context public result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "command",
+    "status",
+    "operation_id",
+    "published_revision",
+    "code_publication",
+    "ownership",
+    "secrets_shared",
+    "decision",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "command": {
+      "enum": [
+        "inspect",
+        "status",
+        "context",
+        "context create"
+      ]
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "not_ready",
+        "decision_required",
+        "rejected",
+        "unknown",
+        "invalid",
+        "unsupported"
+      ]
+    },
+    "operation_id": {
+      "type": "null"
+    },
+    "published_revision": {
+      "type": "null"
+    },
+    "code_publication": {
+      "const": "not_attempted"
+    },
+    "ownership": {
+      "const": "unknown"
+    },
+    "secrets_shared": {
+      "type": "null"
+    },
+    "decision": {
+      "type": "null"
+    },
+    "next_action": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "context_file": {
+      "type": "string",
+      "pattern": "^/[^\\u0000-\\u001f]*$"
+    },
+    "inspection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observed_revision",
+        "owner_present",
+        "runtime_status",
+        "protocol_version"
+      ],
+      "properties": {
+        "observed_revision": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "owner_present": {
+          "type": "boolean"
+        },
+        "runtime_status": {
+          "enum": [
+            "idle",
+            "working",
+            "blocked"
+          ]
+        },
+        "protocol_version": {
+          "const": "1.2"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "inspect"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {},
+          "next_action": {},
+          "inspection": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "inspection"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "status"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {},
+          "next_action": {},
+          "inspection": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "inspection"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "context"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {},
+          "next_action": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "status": {
+                  "not": {
+                    "const": "completed"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "context create"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {},
+          "next_action": {},
+          "context_file": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "context_file"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$comment": "Observed owner presence never grants ownership. Context creation exposes only a canonical private file address, never its capability token; runtime additionally rejects path traversal."
+}

@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "status": "feature_workflow_complete_locally",
+  "completed_scope": [
+    "owned managed project-file read, conditional write and no-replay resolve",
+    "three-tool feature MCP broker with action-only fixed engine scope",
+    "exact Haiku feature profile and correlated native trace adapter",
+    "feature acceptance controller (scripts/provider_mcp_feature_smoke.py) with offline tests"
+  ],
+  "verification": [
+    {
+      "scope": "project-file core",
+      "tests": 19,
+      "seconds": 12.799,
+      "passed": true
+    },
+    {
+      "scope": "broker, feature broker and project files combined",
+      "tests": 45,
+      "seconds": 16.456,
+      "passed": true
+    },
+    {
+      "scope": "auth and feature profiles after adapter review fixes",
+      "tests": 19,
+      "seconds": 0.158,
+      "passed": true
+    },
+    {
+      "scope": "feature controller offline tests (tests/test_provider_mcp_feature_smoke.py)",
+      "tests": 10,
+      "seconds": 0.01,
+      "passed": true
+    },
+    {
+      "scope": "feature profile + auth controller regression",
+      "tests": 19,
+      "passed": true
+    }
+  ],
+  "api_calls": "1 authorized Haiku feature turn (consumed; passed)",
+  "full_suite_rerun": "425 tests OK in 121.451s, 2026-10-14; historical other-agent 421-test pass retained",
+  "packaging_run": "current wheel/sdist isolated installations passed; artifact/provenance details in feature-integration-verification.json",
+  "controller_draft": "scripts/provider_mcp_feature_smoke.py",
+  "controller_verified": "approved actual Haiku feature turn passed; original evidence reverified offline after stricter journal, canonical and managed-state checks; 14 controller tests passed",
+  "controller_tests_created": true,
+  "delivery_scope": "updated sdist and byte-identical runtime wheel; previous differing artifacts retained",
+  "full_v1_2_complete": false,
+  "remaining": [
+    "A44/A46 documented safe Doppler writer contract and actual provider cases",
+    "remaining A54 provider failure evidence; any new API turn requires new explicit authorization"
+  ],
+  "resolved_controller_review_findings": [
+    "Engine log entries have no origin field; current model-origin filter would incorrectly exclude executed calls.",
+    "Causal proof must compare native tool-result/use indices, not normalized completion positions.",
+    "Unknown writes and policy-denied calls need distinct treatment.",
+    "Failure preservation must independently verify source, index, mainline and owner, even when no successful feature is present.",
+    "Fixture target AST and every write receipt require strict actual state verification."
+  ]
+}

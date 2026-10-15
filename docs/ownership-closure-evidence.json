@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-13T07:45:40.919315+00:00",
+  "backend": "GitHub over SSH",
+  "authority": "git@github.com:sifeng86/agent_handoff_cli.git",
+  "script_sha256": "e999e41d35821353deb6f88c13b6a75c77134001eab5577bfb3c63f20fad69d6",
+  "runtime_source_sha256": "c878388e0e5817473a7742d8a66d23f902321df4f0300fdc707d53f3897fccfb",
+  "runtime_digest_format": "sorted relative path + NUL + file bytes + NUL for src/agent_handoff/**/*.py",
+  "local_suite": {
+    "focused_tests": 18,
+    "full_tests": 244,
+    "full_seconds": 78.745,
+    "passed": true,
+    "log_sha256": "982a9bff0994044f888397a4afebda49ff91dabda13e1620fc0a1fba0a8b22ab"
+  },
+  "execution": {
+    "passed": true,
+    "publication_ref": "refs/heads/agent-handoff-plan-smoke-681e0dcf3eff48ba87f3aa79e2a3125d",
+    "branch_deleted": true,
+    "mainline_unchanged": true,
+    "mainline_revision": "f95c4443da110f6dcb2acaef77264451a812befc",
+    "git_version": "git version 2.55.0",
+    "python_version": "3.12.3",
+    "provider": "git-remote",
+    "provider_version": null,
+    "initial_revision": "9f6a8e860a534b2082157fb2912129e9bcef1d45",
+    "writer_a_checkpoint": "54e263c30ef1f5b3a3bb3b801f660cf5105796ca",
+    "writer_a_release": "3faaa4a8815c5e513ce477af7265b7255e5d14b7",
+    "writer_a_reacquire": "31b8d07c3240bdcb086097e4ec8e878030411dd1",
+    "takeover_revision": "0784fe2926902fe0ea487fcf7ce6725538339f1c",
+    "writer_b_checkpoint": "3cec3dbbe73eef585c77c5d4bf87d5e85144085a",
+    "handoff_revision": "df1def55f55942826c82ade207da6010bb511aa4",
+    "writer_b_reacquire": "1f128fd87cadffebc97f1d9bc57d666d5264bdf4",
+    "done_revision": "cbc938eaba09b950c0b16dd21e1a1ee11a8be510",
+    "final_revision": "1699efd337c111204a2d8fd1dcc7e01d394ec7f0",
+    "writer_a_status": "completed",
+    "takeover_status": "completed",
+    "checkpoint_status": "completed",
+    "handoff_status": "completed",
+    "done_status": "completed",
+    "fenced_operations": [
+      "checkpoint",
+      "release"
+    ],
+    "plan_release_preserved": true,
+    "takeover_fenced_old_writer": true,
+    "takeover_new_session": true,
+    "handoff_preserved_working_cursor": true,
+    "done_completed_plan": true,
+    "done_retained_owner": true
+  },
+  "independent_readonly_confirmation": {
+    "mainline_revision": "f95c4443da110f6dcb2acaef77264451a812befc",
+    "publication_revision": null,
+    "mainline_unchanged": true,
+    "branch_absent": true
+  },
+  "requirement_scope": {
+    "A05": "Local exact same-session capability-loss rejection, unchanged owner/ref/source and explicit new-session takeover only",
+    "A06": "Hosting explicit new-session identity inequality and exact-parent takeover CAS",
+    "other_hosting": "Sequential A07/A08 fencing and A11/A13/A14(false)/A39 Plan lifecycle"
+  },
+  "limitations": [
+    "No live A05 capability-loss claim",
+    "No in-flight hosting old-writer transport race",
+    "No done(true) or omitted done intent in this hosting run",
+    "No full fault, host, provider or Doppler matrix claim"
+  ],
+  "additional_local_verification": {
+    "A14_explicit_true": "test_A14_done_explicit_true_releases_in_the_completion_commit passed",
+    "A11_strengthened": "exact binary payload/state/summary/owner-null assertions passed",
+    "snapshot_tests": 13,
+    "full_suite_tests": 245,
+    "full_suite_seconds": 78.566,
+    "full_log_sha256": "1dbb45028962f5e657a4dcd1a3c9614beff6f504037197f14ab93b98145d5b82"
+  }
+}

@@ -1,0 +1,430 @@
+{
+  "schema_version": 1,
+  "design_sections": [
+    "\u00a720.9 Security / Host / Bootstrap",
+    "\u00a720.10 Code + Secrets Partial Handoff",
+    "\u00a725 Implementation Definition of Done"
+  ],
+  "spec_refs": [
+    "docs/spec.md \u00a715 Handoff Orchestration and Safety",
+    "docs/spec.md \u00a716 Acceptance Plan and Traceability",
+    "docs/spec.md \u00a717 Delivery Gates"
+  ],
+  "scope": {
+    "local": "A55/A56 and partial-handoff assertions use isolated local bare-Git, private file, and fake-secret-adapter fixtures.",
+    "host": "Host preservation evidence covers selected Linux configuration entries in the current WSL environment. It does not cover every service, live firewall state, Windows policy, or all host state.",
+    "providers": "A59 has separate actual fresh Codex and Claude sessions on isolated local Git authorities. These are provider-backed bootstrap runs, not GitHub hosting runs. A63 also has one actual fresh Claude Haiku 5.5 missing-secret turn on isolated local Git; the retained trace was revalidated and manually reviewed.",
+    "limitations": [
+      "A58 is proven for one isolated Linux installed-launcher repair using the current source script; the original evidence wheel predates the repair module; the latest wheel now includes installed-SDK proof, and no comprehensive global host snapshot or arbitrary configuration repair is claimed.",
+      "A60 mutation fail-closed behavior is tested; readonly diagnostics for an incompatible protocol are not established and the current inspection path strictly parses protocol records.",
+      "A61/A62 partial-handoff tests call the runtime API with a fake secret adapter; the installed package smoke does not exercise partial secret handoff through the packaged CLI.",
+      "No full Design \u00a725 completion claim is made."
+    ]
+  },
+  "classification_legend": {
+    "proven_local": "Executed assertions cover the stated local runtime or fixture requirement.",
+    "proven_hosting": "An applicable real external provider/session run supplements the local assertions; scope is stated explicitly.",
+    "incomplete": "A required integration, interaction, readonly behavior, or postcondition remains unproven.",
+    "unverified": "No applicable executed evidence was found.",
+    "contradicted": "Executed evidence violates the requirement."
+  },
+  "acceptance": [
+    {
+      "id": "A55",
+      "requirement": "If `.env` is tracked and selected, checkpoint refuses to publish it and preserves local/index state.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_snapshots.py",
+          "function": "test_A55_tracked_dotenv_selection_rejected_without_index_changes",
+          "fixture": "Local bare-Git runtime with tracked `.env` fixture.",
+          "assertions": [
+            "Checkpoint raises RuntimeFailure when tracked `.env` is selected",
+            "Remote publication revision is unchanged",
+            "Index bytes and `.env` content remain unchanged"
+          ]
+        }
+      ],
+      "live_evidence": [],
+      "gaps": []
+    },
+    {
+      "id": "A56",
+      "requirement": "Secret file mappings with traversal, protected paths, or symlink escape are rejected before write/publication.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_secrets.py",
+          "function": "test_reject_noncanonical_and_protected_file_mappings",
+          "fixture": "Manifest parser unit cases.",
+          "assertions": [
+            "Absolute/traversal/noncanonical paths and protected repository files raise RuntimeFailure"
+          ]
+        },
+        {
+          "file": "tests/test_secrets.py",
+          "function": "test_reject_alias_and_file_directory_overlap",
+          "fixture": "Manifest parser unit cases.",
+          "assertions": [
+            "Duplicate/case aliases and file-directory overlaps are rejected"
+          ]
+        },
+        {
+          "file": "tests/test_file_material.py",
+          "function": "test_symlink_directory_and_hardlink_are_never_written",
+          "fixture": "Temporary checkout and outside directory.",
+          "assertions": [
+            "Symlink parent causes rejection without outside write",
+            "Hardlink target is not overwritten"
+          ]
+        },
+        {
+          "file": "tests/test_snapshots.py",
+          "function": "test_secret_paths_and_symlink_aliases_are_rejected",
+          "fixture": "Snapshot selection against local `.env`, symlink, and control paths.",
+          "assertions": [
+            "Secret aliases, traversal, and control paths cannot enter selected snapshot"
+          ]
+        }
+      ],
+      "live_evidence": [],
+      "gaps": []
+    },
+    {
+      "id": "A57",
+      "requirement": "Before isolated installation, inspect existing VPN/firewall/SSH/configuration and preserve it; do not arbitrarily disable or overwrite it.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_host_guard.py",
+          "function": "test_A57_fresh_venv_preserves_existing_host_config_without_public_hashes",
+          "fixture": "Synthetic SSH, VPN, firewall, provider, Git, network, and shell entries around actual isolated venv creation.",
+          "assertions": [
+            "HostGuard inspects before venv creation",
+            "All fixture categories verify preserved afterward",
+            "Fixture bytes remain unchanged",
+            "Public reports omit contents and hashes"
+          ]
+        },
+        {
+          "file": "tests/test_host_guard.py",
+          "function": "test_unreadable_configuration_never_claims_preserved",
+          "fixture": "PermissionError injected for each selected category.",
+          "assertions": [
+            "Unverifiable categories are reported not_ready, never preserved"
+          ]
+        },
+        {
+          "file": "tests/test_host_guard.py",
+          "function": "test_symlink_targets_never_followed_or_claimed_verified",
+          "fixture": "Symlinked selected host entry.",
+          "assertions": [
+            "Target change is not followed or called preserved",
+            "Private observation does not retain the target fingerprint"
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/host-preservation.md",
+          "assertions": [
+            "Package smoke inspected and rechecked selected Linux configuration around wheel/sdist installation",
+            "Accessible SSH/Git/provider/shell/network/VPN/firewall/package-source selections matched",
+            "Services and users/security remained partly unverifiable"
+          ],
+          "scope": "Current Ubuntu WSL and selected paths only; not live firewall/service state, Windows policy, or all host settings."
+        },
+        {
+          "record": "docs/wsl-smoke-evidence.json",
+          "assertions": [
+            "Current Ubuntu WSL package installation and host-file recovery smoke recorded"
+          ],
+          "scope": "Does not claim every host category is observable or preserved."
+        },
+        {
+          "record": "dist/package-verification.json",
+          "assertions": [
+            "Installed wheel/sdist smoke reports selected categories preserved with no changes",
+            "Services and users/security categories are unverifiable, so overall preservation status is not_ready"
+          ],
+          "scope": "Recorded current WSL package run; incomplete host visibility is not treated as success."
+        }
+      ],
+      "gaps": [
+        "Coverage is deliberately limited to selected Linux files/directories; service state, Windows VPN/network policy, and unverifiable host groups are outside the preservation claim."
+      ]
+    },
+    {
+      "id": "A58",
+      "requirement": "Before a necessary destructive host change, create a verified backup/recovery handle and make only the reviewed minimum change.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_host_recovery.py",
+          "function": "test_verified_backup_restores_only_reviewed_file_and_metadata",
+          "fixture": "Temporary user-owned file and unrelated sibling.",
+          "assertions": [
+            "Verified backup restores exact bytes/mode/mtime",
+            "Unrelated sibling remains unchanged",
+            "Operation resolution reports terminal result"
+          ]
+        },
+        {
+          "file": "tests/test_host_recovery_cli.py",
+          "function": "test_cli_backup_verify_restore_scope_and_required_handles",
+          "fixture": "CLI invoked against one temporary file.",
+          "assertions": [
+            "Restore requires an independently captured expected-current handle",
+            "One-file restoration succeeds",
+            "Code publication is not attempted"
+          ]
+        },
+        {
+          "file": "tests/test_host_recovery_cli.py",
+          "function": "test_process_exit_after_replace_resolves_without_replay",
+          "fixture": "Real child process exits after atomic replacement.",
+          "assertions": [
+            "Exit 77 leaves durable operation evidence",
+            "Restart resolution identifies restored outcome",
+            "Repeated resolve does not replace file again"
+          ]
+        },
+        {
+          "file": "tests/test_installer_repair.py",
+          "function": "test_repairs_only_shebang_and_keeps_verified_pre_repair_backup",
+          "fixture": "Approved isolated prefix with verified healthy backup and one missing-interpreter shebang fault.",
+          "assertions": [
+            "Backup/emit failure prevents replacement; callback verifies broken bytes remain before restoration",
+            "Unrelated body, owner/mode, scope, symlink and non-executable backup faults fail closed",
+            "Journal interruption and editor-race outcomes remain unknown until exact observation; no replay"
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/package-verification.md",
+          "assertions": [
+            "Installed wheel/sdist CLI exercises host backup, verify, restore, and resolve against local fixture files"
+          ],
+          "scope": "Local installed-CLI fixture, not a destructive repair of real host configuration."
+        },
+        {
+          "record": "docs/installer-repair-evidence.json",
+          "assertions": [
+            "Manifest-verified delivered wheel installed offline into a fresh temporary venv",
+            "Installed launcher runs before fault and after repair; missing-interpreter fault produces ENOENT",
+            "Source repair script emits validated backup then restore records; verified pre-repair backup preserves broken bytes",
+            "Exact launcher bytes/mode/owner restored; all unrelated prefix bytes/modes/symlink targets unchanged after final CLI execution",
+            "Primary independently checked retained backup linkage and resolved recovery journal"
+          ],
+          "scope": "One actual isolated Linux venv installation, current source repair script; no provider/API or global host change. Output ordering alone is not a temporal proof; callback/fault tests cover backup-before-write."
+        },
+        {
+          "record": "docs/a58-installed-sdk-evidence.json",
+          "assertions": [
+            "New wheel imports installer_repair, host_recovery and paths from installed prefix",
+            "Verified broken backup is present while launcher is still broken in pre-replace callback",
+            "Exact restored launcher and terminal journal independently checked by Primary",
+            "Post-repair installed CLI help preserves unrelated prefix entries"
+          ],
+          "scope": "Actual fresh isolated installed-wheel SDK; source wrapper is not shipped as a repair CLI subcommand."
+        }
+      ],
+      "gaps": [
+        "This evidence covers a single approved missing-interpreter launcher repair, not all host configurations or Windows settings; no comprehensive global host snapshot was performed.",
+        "The wheel provides the repair SDK; user-facing source wrapper remains outside the wheel and there is no repair CLI subcommand."
+      ]
+    },
+    {
+      "id": "A59",
+      "requirement": "A fresh supported Agent discovers canonical instructions and completes readonly discovery/resume before project mutation.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "file": "tests/test_provider_bootstrap_smoke.py",
+          "function": "test_valid_fresh_bootstrap_order_accepts_optional_automatic_agents_loading",
+          "fixture": "Synthetic traces test verifier decisions only; they are not provider evidence.",
+          "assertions": [
+            "Read/inspect/resume/mutation ordering checks reject unsafe traces"
+          ]
+        },
+        {
+          "file": "tests/test_provider_bootstrap_smoke.py",
+          "function": "test_mutation_before_readonly_inspect_is_rejected",
+          "fixture": "Synthetic provider event trace.",
+          "assertions": [
+            "Feature mutation before readonly inspection is rejected by the harness verifier"
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/provider-bootstrap-evidence.json",
+          "assertions": [
+            "Retained actual GPT-6-Luna Codex session read canonical instructions, inspected, resumed ready/owned, then changed only managed app.py",
+            "Source remained unchanged and publication ref did not gain a feature commit",
+            "Retained trace and capability were independently revalidated"
+          ],
+          "scope": "One Codex CLI/model session on Ubuntu WSL and isolated local bare Git; provider config/auth guard is invocation-scoped and original source index digest was not retained for this run."
+        },
+        {
+          "record": "docs/claude-bootstrap-evidence.json",
+          "assertions": [
+            "Separate actual fresh Claude Haiku 5.5 session read canonical instructions, completed readonly status and resume ready/owned, then changed only managed app.py",
+            "Source HEAD/worktree/index and publication ref remained unchanged",
+            "Provider config/auth guard remained unchanged"
+          ],
+          "scope": "One Claude Code version/model on Ubuntu WSL and isolated local Git; settings/auth guard covers settings.json and credentials.json, not .claude.json or caches."
+        }
+      ],
+      "gaps": [
+        "Evidence covers the recorded Codex and Claude versions/configurations only; it does not prove every supported startup mode or cross-provider takeover."
+      ]
+    },
+    {
+      "id": "A60",
+      "requirement": "An incompatible protocol fails closed for mutation while readonly diagnostics remain available.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_publication.py",
+          "function": "test_A23_invalid_hand_edited_control_metadata_never_authorizes_mutation",
+          "fixture": "Local bare-Git runtime with a validly published future protocol version.",
+          "assertions": [
+            "Checkpoint mutation raises unsupported/invalid code",
+            "Remote ref remains at incompatible commit",
+            "Last trusted integrity revision and local edit remain unchanged"
+          ]
+        },
+        {
+          "file": "tests/test_foundation.py",
+          "function": "test_invalid_records",
+          "fixture": "Strict control-record parser cases.",
+          "assertions": [
+            "Malformed records raise RuntimeFailure"
+          ]
+        },
+        {
+          "file": "tests/test_protocol_diagnostics.py",
+          "function": "test_A60_incompatible_protocol_readonly_diagnostic_and_mutation_refusal",
+          "assertions": [
+            "Actual future protocol published after current session acquisition",
+            "Readonly inspect returns schema-valid unsupported/code8 with protocol diagnostic and empty stderr",
+            "Release mutation returns unsupported/code8",
+            "Future ref/private trust/source HEAD/index/edit unchanged by both CLI calls"
+          ],
+          "fixture": "Local bare Git and actual CLI; diagnostic is refusal information, without interpreting unknown schema."
+        }
+      ],
+      "implementation_observation": "Strict protocol parsing prevents interpreting future control records; readonly inspect still returns a safe schema-valid unsupported diagnostic through the CLI error result.",
+      "live_evidence": [],
+      "gaps": []
+    },
+    {
+      "id": "A61",
+      "requirement": "If code handoff publishes but secret sync fails, handoff may release ownership and must report secrets_shared false/partial/unknown.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_partial_handoff.py",
+          "function": "test_A61_code_handoff_published_despite_secret_read_failure",
+          "fixture": "Direct local bare-Git runtime API call with VerifiedFake secret adapter read failure; not packaged CLI execution.",
+          "assertions": [
+            "Code publication is published",
+            "Ownership is released",
+            "secrets_shared is false",
+            "Provider exception text is not returned"
+          ]
+        }
+      ],
+      "live_evidence": [],
+      "gaps": [
+        "The Doppler failure is injected; no real provider timeout/permission case is combined with a successful hosting handoff."
+      ]
+    },
+    {
+      "id": "A62",
+      "requirement": "If secret convergence succeeds while Git handoff is unknown, report the two outcomes separately and do not claim full success.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_partial_handoff.py",
+          "function": "test_A62_secret_convergence_success_git_handoff_unknown_separate_results",
+          "fixture": "Direct local bare-Git runtime API call with successful VerifiedFake secret sync and injected publication_unknown send result; not packaged CLI execution.",
+          "assertions": [
+            "Overall status is unknown",
+            "Code publication is publication_unknown",
+            "Secret convergence is true",
+            "Ownership remains ownership_pending"
+          ]
+        }
+      ],
+      "live_evidence": [],
+      "gaps": [
+        "Git unknown is returned by an injected backend result in this combined test; actual timeout/crash transport evidence exists separately and is not combined with Doppler success."
+      ]
+    },
+    {
+      "id": "A63",
+      "requirement": "When a new Agent lacks required local secrets, stop dependent work and do not guess values.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "file": "tests/test_secret_cli.py",
+          "function": "test_A63_resume_requires_local_material_in_new_managed_checkout",
+          "fixture": "Local runtime configured with required local-env key but no material in resumed managed checkout.",
+          "assertions": [
+            "Resume returns not_ready",
+            "Missing required key is explicitly listed"
+          ]
+        },
+        {
+          "file": "tests/test_secret_cli.py",
+          "function": "test_local_env_configure_decision_private_patch_verify_flow",
+          "fixture": "Secret CLI local-env flow.",
+          "assertions": [
+            "Verify exits 6 when required material is absent",
+            "Verify exits 0 after material is supplied"
+          ]
+        },
+        {
+          "file": "tests/test_provider_readiness_smoke.py",
+          "function": "test_real_cli_resume_and_verify_return_not_ready_without_starting_program",
+          "fixture": "Real installed CLI and isolated local Git; offline fixture validation, not fresh-provider evidence.",
+          "assertions": [
+            "Real resume/verify report the declared required key missing with exit 6",
+            "Fixture launch marker detects execution if the dependent program is invoked"
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/claude-readiness-evidence.json",
+          "assertions": [
+            "One fresh Claude Haiku 5.5 turn observed real installed-CLI resume not_ready/exit 6, owned capability and the exact required local-only key missing",
+            "The Agent stopped before dependent_test.py; launch marker remained absent; no placeholder, .env or project-file mutation was introduced",
+            "Source HEAD/index and mainline remained unchanged; managed project remained unchanged; owner acquisition was the only publication and owner capability was proved",
+            "Context token was absent from the provider trace and stderr; provider settings/auth guard remained unchanged; Primary approved the retained prose"
+          ],
+          "scope": "One actual Claude Code 2.1.296 / claude-haiku-5-5 fresh turn on Ubuntu WSL with isolated local Git and a required local-only secret. The original smoke status was manual_review_pending_unparsed_shell; retained trace was independently revalidated after readonly-shell parser repair. No shared-backend, all-provider or broader host claim."
+        }
+      ],
+      "gaps": []
+    }
+  ],
+  "material_gaps": [
+    {
+      "id": "A58",
+      "gap": "Necessary destructive host repair is not integrated with a verified backup/recovery handle and minimum-change installer flow."
+    },
+    {
+      "id": "A57",
+      "gap": "Host preservation is scoped to selected Linux paths; some groups are unverifiable and Windows/live service state is outside evidence."
+    }
+  ],
+  "A60_execution": {
+    "tests": 1,
+    "passed": true,
+    "log_sha256": "486d74111e69a8166a546dfe173f2db63ff8c665f7129eae6dc42fe21f5acd2a"
+  }
+}

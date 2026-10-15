@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-13T05:22:15.826897+00:00",
+  "backend": "GitHub over SSH",
+  "authority": "git@github.com:sifeng86/agent_handoff_cli.git",
+  "script_sha256": "faf80a9633ec1fc826c50cbbc6b046775dd06e6c84f639cba623b85b46fefd06",
+  "runtime_source_sha256": "7ae9f899e80471774362db68a52b518ed37bc9be7e0e3fd15d5aa17a83beb299",
+  "requirement_scope": [
+    "A12 selected text/binary/working Plan checkpoint and separate-process recovery",
+    "A25 staged/unstaged source index preservation",
+    "A26 untracked binary and ignored local file preservation"
+  ],
+  "local_suite": {
+    "tests": 216,
+    "result": "passed",
+    "duration_seconds": 80.408
+  },
+  "execution": {
+    "passed": true,
+    "publication_ref": "refs/heads/agent-handoff-resume-smoke-6ef5fa46717b43fba5b8a3fba8af2353",
+    "branch_deleted": true,
+    "mainline_unchanged": true,
+    "mainline_revision": "f95c4443da110f6dcb2acaef77264451a812befc",
+    "git_version": "git version 2.55.0",
+    "python_version": "3.12.3",
+    "provider": "git-remote",
+    "provider_version": null,
+    "initial_revision": "ba89402737dd1855474972763f9c7a4431d9ee69",
+    "acquire_revision": "e3624745c1351ee4dde432b529b1198c45ce5258",
+    "checkpoint_revision": "0289b117d7fc76240d5368b80edc8fe060f97ceb",
+    "final_revision": "bdce12f987eee80a661480abff36a40167750335",
+    "init_status": "completed",
+    "acquire_status": "completed",
+    "checkpoint_status": "completed",
+    "resume_status": "not_ready",
+    "managed_recovery_status": "completed",
+    "original_recovery_status": "rejected",
+    "release_status": "completed",
+    "managed_resume_status": "ready",
+    "managed_checkout_private": true,
+    "resume_snapshot_exact": true,
+    "preserved_edits_require_integration": true,
+    "source_state_preserved": true,
+    "recover_session_proved": true,
+    "original_checkout_fenced": true,
+    "resume_idempotent": true,
+    "A12": true,
+    "A25": true,
+    "A26": true
+  },
+  "independent_readonly_confirmation": {
+    "mainline_revision": "f95c4443da110f6dcb2acaef77264451a812befc",
+    "publication_revision": null,
+    "mainline_unchanged": true,
+    "branch_absent": true
+  },
+  "limitations": [
+    "Separate Python CLI processes are not fresh AI provider sessions or independent WSL installations.",
+    "No in-flight takeover, actual transport fault, physical crash, Windows host recovery, or Doppler fencing proof.",
+    "The original local edits remain integration-required; their semantic merge is intentionally outside the runtime.",
+    "GitHub server version is not available and provider_version remains null."
+  ]
+}

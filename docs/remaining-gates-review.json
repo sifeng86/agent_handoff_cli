@@ -1,0 +1,174 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-14",
+  "design": "agent-handoff-runtime-solution-design-v1.2",
+  "scope": "Targeted evidence review of \u00a725.4, \u00a725.9, and \u00a725.10 only. This review does not close the full v1.2 Definition of Done or alter the main completion audit.",
+  "gates": [
+    {
+      "id": "25.4",
+      "requirement": "Fresh supported Agent session \u80fd\u5728\u7b2c\u4e00\u6b21 project mutation \u524d\u81ea\u52d5\u8d70\u6b63\u78ba bootstrap\u3002",
+      "classification": "proven_for_required_scope",
+      "evidence": [
+        {
+          "file": "docs/provider-bootstrap-evidence.md and docs/provider-bootstrap-evidence.json",
+          "observed_steps": [
+            "fresh Codex session",
+            "canonical instructions read",
+            "readonly inspection",
+            "ready/owned resume",
+            "first managed app.py feature mutation"
+          ],
+          "proves": "One actual fresh Codex run completed canonical discovery and readonly inspection, established ready/owned resume, then changed the managed checkout; the report records independent source/ref/session checks.",
+          "does_not_prove": "Every Codex version/startup variant, Claude takeover, or all provider/platform combinations."
+        },
+        {
+          "file": "docs/claude-bootstrap-evidence.md and docs/claude-bootstrap-evidence.json",
+          "observed_steps": [
+            "fresh Claude Haiku 5.5 session",
+            "canonical instructions read",
+            "readonly status",
+            "ready/owned resume",
+            "managed app.py feature mutation"
+          ],
+          "proves": "A separately retained actual Claude Code run completed the same first-mutation ordering and scoped source/ref/capability checks.",
+          "does_not_prove": "The later exclusive-MCP diagnostic profile itself performed a feature mutation. That profile was used for A35 readonly authentication diagnosis, a distinct requested scenario."
+        },
+        {
+          "file": "docs/claude-mcp-auth-evidence.json",
+          "observed_steps": [
+            "canonical read",
+            "completed inspect",
+            "typed authentication-required result",
+            "external human authentication handoff",
+            "zero resumes and zero project mutations"
+          ],
+          "proves": "The separately scoped fresh-agent A35 auth handoff; it accurately preserves the initially free owner and does not claim a feature edit.",
+          "does_not_prove": "A first feature mutation under the MCP-only profile; that is not an additional condition in the quoted \u00a725.4 requirement, and this readonly A35 turn did not need to mutate the project."
+        }
+      ],
+      "assessment": "The exact \u00a725.4 wording asks for a fresh supported Agent session to bootstrap before its first project mutation; it does not require every provider profile or an authentication-only diagnostic to perform a mutation. Existing actual Codex and Claude first-mutation runs meet that scoped condition. The later MCP profile was used for the distinct readonly A35 auth scenario, whose evidence has zero resumes and zero edits by design. Do not keep the completion-audit gap phrased as a mandatory rerun under the latest MCP profile unless that profile is separately declared as a supported project-edit workflow.",
+      "action_if_scope_changes": "If the MCP-only profile is promoted as a supported feature-editing workflow, add an authorized first-mutation run for that workflow. No additional model run is required to satisfy the current \u00a725.4 wording."
+    },
+    {
+      "id": "25.9",
+      "requirement": "host installation/recovery tests \u8b49\u660e\u4e0d\u6703\u4efb\u610f\u7834\u58de\u65e2\u6709 VPN/network/SSH/provider configuration\uff1b",
+      "classification": "proven_for_required_scope",
+      "evidence": [
+        {
+          "file": "tests/test_host_guard.py",
+          "functions": [
+            "HostGuardTests.test_A57_fresh_venv_preserves_existing_host_config_without_public_hashes",
+            "HostGuardTests.test_changed_config_detected_without_repair_or_rollback",
+            "HostGuardTests.test_unreadable_configuration_never_claims_preserved",
+            "HostGuardTests.test_symlink_targets_never_followed_or_claimed_verified"
+          ],
+          "proves": "An isolated venv installation is bracketed by inspection/verification of existing VPN, firewall, SSH, provider, Git, network, and shell fixture entries. Changed or unreadable entries are not reported as preserved, and inspection does not roll back an editor change.",
+          "does_not_prove": "All files or live state on every host; these are controlled fixture paths, and inaccessible scopes remain unverifiable."
+        },
+        {
+          "file": "docs/host-preservation.md and dist/package-verification.json",
+          "functions": [
+            "scripts.package_smoke.smoke (recorded artifact evidence)"
+          ],
+          "proves": "The delivered wheel/sdist smoke recorded the named selected Linux categories (including VPN, network, SSH, and provider) as preserved across isolated installs; no selected category changed.",
+          "does_not_prove": "The report marks services and users/security unverifiable and explicitly scopes observation to selected Linux configuration entries, not live service state, Windows policy, credentials, or every host file."
+        },
+        {
+          "file": "tests/test_installer_repair.py and docs/installer-repair-evidence.json and docs/a58-installed-sdk-evidence.json",
+          "functions": [
+            "InstallerRepairTests.test_repairs_only_shebang_and_keeps_verified_pre_repair_backup",
+            "InstallerRepairTests.test_wrong_scope_body_change_valid_other_interpreter_and_symlink_are_rejected",
+            "InstallerRepairTests.test_journaled_fault_is_unknown_then_resolves_without_replaying",
+            "InstallerRepairTests.test_editor_race_after_journal_is_unknown_and_never_overwritten"
+          ],
+          "proves": "A necessary repair of one isolated installed launcher is limited to its broken shebang, uses verified healthy and pre-repair backups, preserves unrelated prefix entries, and fails closed on broader changes or races. The installed SDK evidence independently confirms the installed modules and post-repair CLI behavior.",
+          "does_not_prove": "Arbitrary repair of real VPN/network/SSH/provider files or comprehensive global-host state preservation; the evidence explicitly says no global host snapshot was performed."
+        },
+        {
+          "file": "tests/test_host_recovery.py",
+          "functions": [
+            "HostRecoveryTests.test_verified_backup_restores_only_reviewed_file_and_metadata",
+            "HostRecoveryTests.test_crash_before_and_after_rename_resolves_without_replay",
+            "HostRecoveryTests.test_editor_change_during_restore_preserved_and_unknown_not_replayed",
+            "HostRecoveryTests.test_symlinks_hardlinks_and_extended_attributes_refused"
+          ],
+          "proves": "The recovery primitive is limited to independently backed-up, reviewed single-file scope and retains user/editor changes across interruption and unsafe file shapes.",
+          "does_not_prove": "Recovery of system services or host-wide configuration."
+        }
+      ],
+      "assessment": "The \u00a725.9 gate names VPN/network/SSH/provider configuration. Those selected Linux categories are recorded preserved in the delivered install smoke, and fixture/repair tests enforce conservative single-file behavior. The broader \u00a75.2 rule also says preserve services, users/groups, packages, repositories, shell/Git/provider configuration and credentials by default; the host report explicitly marks services and users/security unverifiable and does not claim those categories were inspected. This is a limitation on broad preservation claims, not evidence that installation changed them. Earlier provider-auth/config findings belong to fresh-agent invocations, not installer/recovery, and are not counterevidence to this gate. Do not require an exhaustive host snapshot absent a change that touches those scopes. The broader \u00a75.2 list remains the default non-interference rule for any future operation; the isolated smoke did not run a comprehensive snapshot of every such item.",
+      "action_if_scope_changes": "No global snapshot is required solely by \u00a725.9. Before any installer/runtime change touches an unobserved \u00a75.2 category, add that category to a scoped preservation guard and verify it around the actual operation.",
+      "normative_cross_reference": {
+        "source": "Design \u00a75.2 Host preservation guardrail",
+        "requirement": "Agent \u5728\u5b89\u88dd\u6216\u4fee\u5fa9 agentctl\u3001Git\u3001Doppler CLI \u6216 runtime dependencies \u6642 MUST inspect first\uff0cMUST preserve existing behavior by default\uff0c\u4e14 MUST NOT \u4efb\u610f disable\u3001overwrite\u3001delete \u6216\u91cd\u8a2d\u65e2\u6709 services\u3001firewall/network\u3001VPN\u3001SSH\u3001users/groups\u3001unrelated packages\u3001package repositories\u3001shell/profile\u3001Git/global Git config\u3001Codex/Claude/provider configuration\u3001credentials\u3002"
+      }
+    },
+    {
+      "id": "25.10",
+      "requirement": "\u6240\u6709 unsupported provider/platform/backend \u660e\u78ba fail closed \u6216\u6a19\u793a unsupported\uff0c\u6c92\u6709 silent safety downgrade\u3002",
+      "classification": "partial",
+      "evidence": [
+        {
+          "file": "docs/support-capability-matrix.md, README.md, pyproject.toml, src/agent_handoff/cli.py",
+          "functions": [
+            "CLI platform guard in agent_handoff.cli",
+            "project requires-python metadata"
+          ],
+          "proves": "The advertised runtime is bounded to Python >=3.12 and Linux/WSL; native Windows/macOS and unsupported Git formats/features are explicitly marked unsupported rather than implied as supported.",
+          "does_not_prove": "A whole-runtime test for every unsupported OS/version or matrix combination. In particular, requires-python >=3.12 and README wording do not establish whether future Python minor versions are supported or merely installable."
+        },
+        {
+          "file": "src/agent_handoff/git_backend.py and tests/test_git_unsupported_boundaries.py",
+          "functions": [
+            "GitBackend.remote_head",
+            "GitBackend.records",
+            "GitBackend.run",
+            "UnsupportedGitBoundaryTests.test_sha256_bare_authority_fails_closed_before_fetch",
+            "test_gitlink_tree_entry_is_rejected_by_readonly_inspection",
+            "test_root_gitattributes_lfs_filter_is_rejected",
+            "test_nested_gitattributes_lfs_filter_is_rejected",
+            "test_git_backend_ignores_configured_pre_push_hook",
+            "test_preservation_disables_source_fsmonitor_helper"
+          ],
+          "proves": "Unsupported SHA-256, submodule and LFS cases fail closed on real local Git fixtures; explicit Git execution disables hooks and fsmonitor, with control fixtures confirming the helpers would otherwise execute.",
+          "does_not_prove": "Every Git server, transport, hosting policy or repository feature."
+        },
+        {
+          "file": "src/agent_handoff/secrets/adapter.py, src/agent_handoff/secrets/doppler.py, tests/test_secret_service.py",
+          "functions": [
+            "Adapter.require_write_gate",
+            "Doppler.read",
+            "SecretServiceTests.test_doppler_write_gate_cannot_be_enabled_by_grant",
+            "test_restricted_or_old_cli_values_never_become_empty_baseline"
+          ],
+          "proves": "Shared Doppler writes remain explicitly unsupported unless provider fencing, conditional key writes and terminal operation evidence are all established; readonly scope/version constraints have fail-closed tests.",
+          "does_not_prove": "The provider satisfies that write contract. This is a deliberate disabled capability, not completion evidence for A44/A46 or \u00a725.5."
+        },
+        {
+          "file": "scripts/provider_mcp_profile.py, scripts/provider_tool_broker.py, scripts/landlock_tool_child.py and their focused test modules",
+          "functions": [
+            "ProviderMcpProfileTests.test_profile_rejects_extra_server_and_cannot_overwrite_destination",
+            "ProviderMcpProfileTests.test_trace_rejects_unapproved_registry_model_and_uncorrelated_ids",
+            "ProviderMcpProfileTests.test_optional_canonical_usage_identity_must_match_requested_model",
+            "ProviderToolBrokerTests.test_agentctl_rejects_unsafe_commands_arguments_and_raw_stderr",
+            "ProviderToolBrokerTests.test_agentctl_rejects_valid_result_for_a_different_command",
+            "ProviderToolBrokerTests.test_v2_restart_rejects_forged_registry_or_extra_policy_grants",
+            "LandlockToolChildTests.test_non_linux_platform_fails_closed_before_exec",
+            "LandlockToolChildTests.test_context_file_shell_symlink_and_listed_directory_do_not_grant_file_reads"
+          ],
+          "proves": "The experimental Claude isolation profile rejects unexpected models/tools/servers; the broker exposes only fixed tools and engine phases; Landlock fails before target exec on unsupported platform/ABI and its documented ABI-1 limits are explicit.",
+          "does_not_prove": "Fresh-agent success under every profile, arbitrary command confinement, network isolation, or Codex MCP confinement."
+        }
+      ],
+      "assessment": "The support matrix explicitly treats untested combinations as candidates, not supported features, and current OS/Git/provider boundaries have explicit unsupported declarations or fail-closed fixtures. It does not require a Cartesian test over every platform \u00d7 provider \u00d7 Git host. One advertised boundary is ambiguous: pyproject.toml accepts every Python version >=3.12, while executed evidence is Python 3.12 and the docs do not say whether later minor versions are supported. Thus the gate is covered for declared OS/Git/provider capabilities but should remain partial until the Python compatibility range is clarified; do not treat this as evidence that later versions are broken.",
+      "action_if_scope_changes": "Align pyproject.toml, README.md and the support matrix on the Python minor-version promise: either bound requires-python to the verified range or explicitly state the tested version and treat later versions as unverified candidates. Keep A44/A46 disabled until authoritative provider-write guarantees exist."
+    }
+  ],
+  "overall_v1_2_status": "incomplete; this review only corrects the interpretation of gates 25.4, 25.9, and 25.10; \u00a725.1, \u00a725.5, \u00a725.6 and other open gates remain separate. A44/A46 and A54 remain material gaps.",
+  "primary_review": {
+    "gate_25_4": "Historical first-mutation evidence meets the original scenario; no every-profile replay condition. Subsequent A54 investigation and disabled legacy launch make the current confined feature workflow incomplete.",
+    "gate_25_9": "Accepted as proved_for_required_scope for named selected Linux installation/recovery categories.",
+    "gate_25_10": "Accepted as proved_for_required_scope after explicitly distinguishing metadata installation floor from verified Python3.12; legacy launch now fails closed. Disabled required features do not satisfy other gates.",
+    "full_goal_complete": false
+  }
+}

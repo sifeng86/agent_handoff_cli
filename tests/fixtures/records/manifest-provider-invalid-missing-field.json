@@ -1,0 +1,12 @@
+{
+  "schema": "secrets-manifest",
+  "record": {
+    "schema_version": 1,
+    "keys": {
+      "DOPPLER_TOKEN": {
+        "classification": "local-only"
+      }
+    }
+  },
+  "valid": false
+}

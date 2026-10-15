@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-15",
+  "command": "python3 scripts/doppler_basic_smoke.py --run-live",
+  "authorization": "User explicitly approved isolated final acceptance and cleanup.",
+  "project": "agent-handoff-test",
+  "config": "dev",
+  "private_evidence_root": "/tmp/agent-handoff-doppler-basic-1tc512x8",
+  "result": {
+    "acceptance_id": "A44-A46-basic",
+    "passed": true,
+    "destination_authorized": true,
+    "runtime_write_count": 3,
+    "setup_write_count": 5,
+    "cleanup_write_attempt_count": 2,
+    "cleanup_write_count": 2,
+    "cleanup_verified": true,
+    "source_hashes_recorded": true,
+    "multiline_roundtrip_verified": true,
+    "doppler_version_verified": true,
+    "authentication_denial_verified": true,
+    "scope_specific_403_proven": false,
+    "A44_verified": true,
+    "A44_baseline_verified": true,
+    "A46_verified": true,
+    "A46_baseline_verified": true,
+    "owned_resume_verified": true,
+    "stale_plan_rejected_before_write": true,
+    "lost_ack_injected_after_actual_adapter_success": true,
+    "lost_ack_resolved_by_fresh_read": true,
+    "lost_ack_no_replay": true,
+    "source_head_index_ref_owner_mainline_unchanged": true,
+    "cleanup_withheld": false,
+    "runner_sha256": "7aea5e281907d791243f684bf0bd14ee0f30fd82311ded622cccdef1bb3da757",
+    "public_value_leak": false
+  },
+  "source_sha256": {
+    "scripts/doppler_basic_smoke.py": "7aea5e281907d791243f684bf0bd14ee0f30fd82311ded622cccdef1bb3da757",
+    "src/agent_handoff/secrets/doppler.py": "9e26856dea23d11d0d83c2ccee45e0608852f18fc54fb922a2e10ffc740edb53",
+    "src/agent_handoff/secrets/service.py": "dfb73779770f4a3cd950870b887c1ff70360680278164ba38a215a864d183c91"
+  },
+  "boundaries": [
+    "Real Doppler writes/readback/delete; local Git fixture.",
+    "Acknowledgement loss is injected after an actual successful write; not an actual network outage.",
+    "Invalid-token read denial is proven; no scoped permission403 claim.",
+    "Basic expected-value preflight is not atomic CAS or cross-service fencing.",
+    "Public service results scanned for raw and JSON-escaped fixture values; private recovery storage intentionally contains values.",
+    "No paid model call, account token creation/revocation, or existing secret mutation."
+  ]
+}

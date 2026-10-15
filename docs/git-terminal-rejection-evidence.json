@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "acceptance_id": "A17",
+  "passed": true,
+  "scope": "Actual local bare-Git receive-pack rejection followed by OS client timeout; no GitHub packet-loss or SSH authentication claim.",
+  "terminal_evidence": "Complete bounded Git porcelain rejection bound to exact prepared OID and publication ref; never inferred from ref observation or client cancellation.",
+  "backend_behavior": {
+    "terminal_rejection_timeout": "rejected",
+    "timeout_without_receipt": "publication_unknown",
+    "accepted_write_reply_timeout": "exact published operation resolved without replay"
+  },
+  "verified_assertions": [
+    "Receive hook actually rejects one acquisition before the reply process stalls",
+    "Expected authority ref remains unchanged and the old journal is resolved/rejected",
+    "Rejected candidate grants no capability and is absent from reachable remote history",
+    "A fresh acquisition has a distinct operation ID and commit; only that commit advances the authority",
+    "Two client pushes total; no replay of the rejected prepared commit",
+    "Wrong identity, truncated, duplicated, conflicting, invalid UTF-8 and oversized receipts are rejected",
+    "Timeout exception repr/args omit private stdout and no stderr is retained"
+  ],
+  "focused_verification": {
+    "worker_modules": [
+      "test_git_timeout",
+      "test_publication"
+    ],
+    "worker_passed_tests": 22,
+    "primary_strengthened_case": "test_terminal_remote_rejection_timeout_is_resolved_and_fresh_acquire_is_new",
+    "primary_passed_tests": 1,
+    "primary_seconds": 2.902
+  },
+  "full_suite_run": false,
+  "hosting_timeout_proven": false
+}

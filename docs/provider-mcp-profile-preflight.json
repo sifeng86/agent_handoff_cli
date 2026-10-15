@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "mcp_configuration_starts_actual_broker": true,
+  "inherited_parent_secret_and_pythonpath_removed_before_python": true,
+  "actual_stdio_handshake_and_exact_two_tools": true,
+  "native_tools_disabled_in_generated_argv": true,
+  "private_add_dirs_absent": true,
+  "exact_requested_model": "claude-haiku-5-5",
+  "actual_claude_model_turn_started": false,
+  "native_claude_trace_format_verified": false,
+  "A35_complete": false,
+  "A54_complete": false,
+  "focused_profile_tests_passed": 8,
+  "primary_focused_seconds": 0.046,
+  "failed_tool_text_preserved_for_privacy_scanning": true,
+  "tool_calls_must_match_declared_native_registry": true,
+  "trace_paths_do_not_access_or_authorize_filesystem": true
+}

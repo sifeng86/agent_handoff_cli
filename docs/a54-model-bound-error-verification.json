@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-14",
+  "scope": "supported feature MCP model-bound backend-error output",
+  "worker": "gpt-6-luna; Primary reviewed and strengthened typed-failure assertions",
+  "test": "tests/test_provider_mcp_feature_smoke.py::test_secret_in_synthetic_doppler_error_stays_out_of_mcp_result_and_logs",
+  "real_components": ["local Git", "ownership/runtime engine", "FeatureBroker", "Doppler proxy", "child executable invocation"],
+  "synthetic_components": ["Doppler backend error containing sentinel", "native events built from actual broker replies"],
+  "assertions": ["backend execution marker", "shared_read unavailable", "secrets_shared false", "sentinel absent in model-bound tool bytes/logs/journal diagnostics/reachable Git objects", "source/index/mainline/owner/ref preservation"],
+  "new_model_api_calls": 0,
+  "full_suite_repeated": false,
+  "focused_verification": {"command": "PYTHONPATH=src:tests python3 -m unittest test_provider_mcp_feature_smoke test_secret_leak_matrix -q", "tests": 21, "seconds": 6.608, "passed": true},
+  "actual_model_error_trace_proved": false,
+  "full_v1_2_complete": false,
+  "delivery_note": "Tests/docs-only follow-up; delivered runtime unchanged. Source archive predates this regression."
+}

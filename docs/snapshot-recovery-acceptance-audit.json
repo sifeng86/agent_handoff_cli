@@ -1,0 +1,464 @@
+{
+  "schema_version": 1,
+  "design_sections": [
+    "\u00a720.2 Handoff / Done / Snapshot",
+    "\u00a720.3 Crash / Unknown Outcomes",
+    "\u00a725 Definition of Done"
+  ],
+  "spec_refs": [
+    "docs/spec.md \u00a76",
+    "docs/spec.md \u00a78",
+    "docs/spec.md \u00a79"
+  ],
+  "evidence_sources": [
+    "tests/test_snapshots.py",
+    "tests/test_faults.py",
+    "tests/test_publication.py",
+    "tests/test_git_timeout.py",
+    "tests/test_git_tcp_timeout.py",
+    "docs/hosting-plan-evidence.md",
+    "docs/hosting-resume-evidence.md",
+    "docs/hosting-runtime-evidence.md",
+    "docs/ownership-closure-evidence.json",
+    "docs/hosting-cas-evidence.md"
+  ],
+  "scope": {
+    "local_runtime": "Tests use the RepositoryFixture local bare remote unless stated otherwise.",
+    "loopback_wire": "test_git_tcp_timeout.py uses actual Git receive-pack wire traffic over loopback; it is not a live hosting provider.",
+    "hosting": "Executed isolated GitHub refs with explicit base and unchanged mainline.",
+    "process_crash": "A16/A20 process exits at a runtime fault hook after server acceptance and before caller result handling; this is not packet-loss evidence.",
+    "limitations": [
+      "No full-scenario hosting requirement is inferred from \u00a725's aggregate gates.",
+      "The latest hosting Plan record covers false done release intent only.",
+      "The hosting Plan execution record's script digest matches the current script; conclusions remain limited to its recorded sequential operations."
+    ]
+  },
+  "classification_legend": {
+    "proven_local": "Requirement-level behavior is asserted in local runtime/backend tests.",
+    "proven_hosting": "Relevant requirement behavior also appears in an executed hosting record.",
+    "incomplete": "An explicit required branch or assertion is not covered.",
+    "unverified": "No applicable executed evidence found.",
+    "contradicted": "Executed evidence violates the requirement."
+  },
+  "acceptance": [
+    {
+      "id": "A11",
+      "requirement": "One handoff commit contains frozen selected snapshot, summary/state and owner=null.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_A11_atomic_handoff_fixed_snapshot_and_owner_release",
+          "file": "tests/test_snapshots.py",
+          "assertions": [
+            "released result",
+            "exact single-parent commit",
+            "same commit exact binary payload/summary/state/owner null",
+            "executable/symlink modes",
+            "source index and local material retained"
+          ],
+          "limits": []
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/ownership-closure-evidence.json",
+          "assertions": [
+            "exact selected payload and Plan",
+            "working state/cursor/summary",
+            "owner null",
+            "exact single parent"
+          ],
+          "scope": "Executed sequential hosting Plan run; not an in-flight race."
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A12",
+      "requirement": "Checkpoint retains owner and publishes a complete recoverable selected snapshot.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_A12_checkpoint_keeps_owner_and_recovers_exact_selected_snapshot",
+          "file": "tests/test_snapshots.py",
+          "assertions": [
+            "owner owned",
+            "exact binary bytes at revision",
+            "restart same session recovers",
+            "remote HEAD equals checkpoint revision"
+          ],
+          "limits": [
+            "Local fixture selects one file."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-resume-evidence.md",
+          "assertions": [
+            "selected text/binary and READY Plan/state",
+            "separate CLI process materializes exact snapshot",
+            "same capability recovery without ref advance"
+          ],
+          "scope": "Executed hosting run with independent readonly confirmation."
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A13",
+      "requirement": "Done atomically sets Plan DONE, null cursors and idle state.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_A13_A14_plan_and_done",
+          "file": "tests/test_snapshots.py",
+          "assertions": [
+            "omitted release intent fails without ref change",
+            "false intent retains owner",
+            "state idle",
+            "Plan DONE"
+          ],
+          "limits": [
+            "Local assertion omits null cursor fields and exact parent."
+          ]
+        },
+        {
+          "file": "tests/test_snapshots.py",
+          "function": "test_A14_done_explicit_true_releases_in_the_completion_commit",
+          "assertions": [
+            "Explicit true result is released",
+            "Exactly one commit parented by prior checkpoint",
+            "Same commit has owner null, Plan DONE, exact idle state/null cursors, summary and selected payload",
+            "Only expected owner/state/Plan/payload paths change",
+            "Original source HEAD/index/Plan/edit retained",
+            "Released session cannot recover and ref remains unchanged"
+          ],
+          "limits": [
+            "Local bare Git; live Plan run exercises explicit false only."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/ownership-closure-evidence.json",
+          "assertions": [
+            "exact parent",
+            "exact idle state with null active/cursor",
+            "Plan DONE",
+            "proved owner retained"
+          ],
+          "scope": "Executed hosting Plan run."
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A14",
+      "requirement": "Done release behavior follows explicit true/false intent and is never guessed.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "function": "test_A13_A14_plan_and_done",
+          "file": "tests/test_snapshots.py",
+          "assertions": [
+            "missing intent raises",
+            "HEAD unchanged",
+            "explicit false retains ownership"
+          ],
+          "limits": []
+        },
+        {
+          "file": "tests/test_snapshots.py",
+          "function": "test_A14_done_explicit_true_releases_in_the_completion_commit",
+          "assertions": [
+            "Explicit true result is released",
+            "Exactly one commit parented by prior checkpoint",
+            "Same commit has owner null, Plan DONE, exact idle state/null cursors, summary and selected payload",
+            "Only expected owner/state/Plan/payload paths change",
+            "Original source HEAD/index/Plan/edit retained",
+            "Released session cannot recover and ref remains unchanged"
+          ],
+          "limits": [
+            "Local bare Git; live Plan run exercises explicit false only."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/ownership-closure-evidence.json",
+          "assertions": [
+            "explicit false retains owner and later release clears it"
+          ],
+          "limits": [
+            "No done(true) or omitted intent on hosting."
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A15",
+      "requirement": "Post-capture editor changes remain local and are not mislabeled as published.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_A15_post_snapshot_editor_changes_retained_for_checkpoint_and_handoff",
+          "file": "tests/test_snapshots.py",
+          "assertions": [
+            "both checkpoint and handoff publish frozen bytes",
+            "later text and untracked binary retained locally",
+            "binary absent remotely",
+            "index and HEAD unchanged"
+          ],
+          "limits": [
+            "Deterministic fault hook rather than asynchronous editor concurrency."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-runtime-evidence.md",
+          "assertions": [
+            "GitHub checkpoint publishes frozen snapshot while later edit/index/HEAD remain local"
+          ],
+          "limits": [
+            "Runtime hook at send boundary, not an independently racing editor."
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A16",
+      "requirement": "After successful push with client unable to process reply, restart resolves operation evidence without duplicate publication.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_A16_process_crash_after_server_accept_resolves_after_restart",
+          "file": "tests/test_faults.py",
+          "assertions": [
+            "separate process exits after server acceptance",
+            "one pending operation",
+            "resolve published",
+            "restart recover owned",
+            "HEAD unchanged"
+          ],
+          "limits": [
+            "Local bare Git; not packet loss."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-runtime-evidence.md",
+          "assertions": [
+            "GitHub accepted acquisition then process exits before runtime handles result",
+            "restart resolves and recovers",
+            "ref unchanged"
+          ],
+          "limits": [
+            "No actual network packet loss."
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A17",
+      "requirement": "Timeout with ref still expected follows backend proof rules and never blindly duplicates an operation.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "function": "test_timeout_kills_pipe_holding_descendants_and_preserves_unknown_intent",
+          "file": "tests/test_git_timeout.py",
+          "assertions": [
+            "OS timeout before write",
+            "expected ref unchanged",
+            "unknown retained",
+            "another acquire blocked"
+          ],
+          "limits": [
+            "Does not prove backend quiescence and exercise safe retry/new operation."
+          ]
+        },
+        {
+          "function": "test_server_executes_after_client_timeout_unknown_barrier_then_exact_resolution",
+          "file": "tests/test_git_tcp_timeout.py",
+          "assertions": [
+            "real loopback receive-pack still pending while ref expected",
+            "unknown result",
+            "retrying acquire blocked",
+            "eventual exact resolution",
+            "one push"
+          ],
+          "limits": [
+            "Local loopback backend; pending server correctly prevents retry."
+          ]
+        },
+        {
+          "function": "test_terminal_remote_rejection_timeout_is_resolved_and_fresh_acquire_is_new",
+          "file": "tests/test_git_timeout.py",
+          "assertions": [
+            "Receive hook actually rejects one acquisition before the reply process stalls",
+            "Expected authority ref remains unchanged and the old journal is resolved/rejected",
+            "Rejected candidate grants no capability and is absent from reachable remote history",
+            "A fresh acquisition has a distinct operation ID and commit; only that commit advances the authority",
+            "Two client pushes total; no replay of the rejected prepared commit"
+          ],
+          "limits": [
+            "Local real receive-pack and OS timeout, not live hosting transport.",
+            "Affirmative proof is an exact terminal rejection; absent a complete receipt the unknown barrier remains."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/git-terminal-rejection-evidence.json",
+          "scope": "Actual local bare-Git receive-pack rejection followed by OS client timeout; no GitHub packet-loss or SSH authentication claim."
+        }
+      ],
+      "gaps": [
+        "No live hosting transport timeout proof; local terminal-receipt coverage does not establish all Design \u00a725 hosting gates."
+      ]
+    },
+    {
+      "id": "A18",
+      "requirement": "When timeout/unknown coincides with competing HEAD change, preserve competitor and do not retry old intent against a new expected OID.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "function": "test_A18_unknown_send_with_advanced_head_never_overwrites_competing_revision",
+          "file": "tests/test_publication.py",
+          "assertions": [
+            "competitor commit published during push boundary",
+            "one send",
+            "publication_unknown",
+            "competitor exact parent/content retained",
+            "local edit retained"
+          ],
+          "limits": [
+            "Injected unknown response; not a real transport timeout."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-cas-evidence.md",
+          "assertions": [
+            "two backend writers against same expected OID yield one publish/one reject"
+          ],
+          "limits": [
+            "Backend CAS only; no runtime timeout operation."
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A19",
+      "requirement": "Unknown acquire outcome blocks further writer mutation until ownership is proven.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "function": "test_unknown_blocks_mutation_without_retry",
+          "file": "tests/test_publication.py",
+          "assertions": [
+            "unknown acquire",
+            "subsequent acquire code 5",
+            "operation remains unknown"
+          ],
+          "limits": [
+            "Injected push outcome."
+          ]
+        },
+        {
+          "function": "test_server_executes_after_client_timeout_unknown_barrier_then_exact_resolution",
+          "file": "tests/test_git_tcp_timeout.py",
+          "assertions": [
+            "real wire timeout while server is pending",
+            "no local session proof",
+            "second acquire blocked",
+            "one push",
+            "exact resolution allows recovery"
+          ],
+          "limits": [
+            "Local loopback Git server, not live hosting."
+          ]
+        }
+      ],
+      "live_evidence": [],
+      "gaps": []
+    },
+    {
+      "id": "A20",
+      "requirement": "Unknown release must not claim ownership cleared.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_A20_unknown_release_does_not_claim_or_clear_owner",
+          "file": "tests/test_publication.py",
+          "assertions": [
+            "status/publication unknown",
+            "ownership not released",
+            "ref and owner unchanged",
+            "next checkpoint blocked code 5"
+          ],
+          "limits": [
+            "Push outcome is injected."
+          ]
+        },
+        {
+          "function": "test_A20_release_accepted_process_crash_resolves_without_replay_or_writer_revival",
+          "file": "tests/test_faults.py",
+          "assertions": [
+            "process exits after accepted release",
+            "pending release blocks recovery",
+            "push disabled for resolution",
+            "owner released after exact resolve",
+            "session revoked and state/index preserved"
+          ],
+          "limits": [
+            "Local bare Git process-fault hook; not packet loss."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-runtime-evidence.md",
+          "assertions": [
+            "GitHub accepted release before process exit",
+            "restart resolves without replay",
+            "owner-only release tree change"
+          ],
+          "limits": [
+            "Runtime fault after acceptance, not packet loss."
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  ],
+  "material_gaps": [],
+  "latest_local_verification": {
+    "module": "test_snapshots",
+    "tests": 13,
+    "seconds": 5.998,
+    "passed": true,
+    "focused_log_sha256": "d66ceae3920cd7e215aa9c1f4cbc89f4b0e0c663edc62a4d616c9788d08d253a",
+    "full_suite_tests": 245,
+    "full_suite_seconds": 78.566,
+    "full_suite_passed": true,
+    "full_log_sha256": "1dbb45028962f5e657a4dcd1a3c9614beff6f504037197f14ab93b98145d5b82"
+  },
+  "terminal_receipt_verification": {
+    "worker_modules": [
+      "test_git_timeout",
+      "test_publication"
+    ],
+    "worker_passed_tests": 22,
+    "primary_strengthened_case": "test_terminal_remote_rejection_timeout_is_resolved_and_fresh_acquire_is_new",
+    "primary_passed_tests": 1,
+    "primary_seconds": 2.902
+  }
+}

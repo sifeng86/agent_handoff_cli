@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "title": "Private verified single-file host recovery backup",
+  "required": [
+    "schema_version",
+    "handle_id",
+    "path",
+    "snapshot",
+    "raw_base64",
+    "verification"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "handle_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/"
+    },
+    "snapshot": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "additionalProperties": false,
+      "title": "Private exact file observation",
+      "required": [
+        "metadata",
+        "sha256"
+      ],
+      "properties": {
+        "metadata": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "items": false,
+          "prefixItems": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 32768,
+              "maximum": 33279
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 16777216
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "integer"
+            }
+          ]
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "raw_base64": {
+      "type": "string",
+      "maxLength": 22369624
+    },
+    "verification": {
+      "const": "private_restore_bytes_verified"
+    }
+  },
+  "$comment": "Runtime validates canonical path, filename/handle linkage, uid/group, canonical base64, byte size/hash, no links/xattrs and private restore rehearsal. Contents and credential-derived hashes remain private."
+}

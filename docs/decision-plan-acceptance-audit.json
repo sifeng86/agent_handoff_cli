@@ -1,0 +1,309 @@
+{
+  "schema_version": 1,
+  "design_sections": [
+    "§11 Decision-Only Human Intervention Contract",
+    "§14 Plan, Step and Completion State",
+    "§20.6 Decision Boundary",
+    "§20.7 Plan / Workflow"
+  ],
+  "spec_refs": [
+    "docs/spec.md §10 Plan and Mainline",
+    "docs/spec.md §11 Decision Engine",
+    "docs/spec.md §16 Acceptance Plan and Traceability",
+    "docs/spec.md §17 Delivery Gates"
+  ],
+  "scope": {
+    "local_runtime": "Local control-plane and bare-Git tests are used for decision and Plan rules.",
+    "hosting": "A39 has an executed sequential GitHub Plan lifecycle record bound to the current hosting script digest.",
+    "agent_ux": "A31 has retained two-fresh-session Haiku5.5 UX evidence; A35 has the separately reviewed third fresh confined auth turn. Earlier failed traces remain retained.",
+    "limitations": [
+      "No requirement that every row run on GitHub or on every provider is inferred.",
+      "A39 hosting evidence is sequential and does not cover in-flight races.",
+      "No full Design §25 completion claim is made."
+    ]
+  },
+  "classification_legend": {
+    "proven_local": "Executed local assertions cover the stated runtime requirement.",
+    "proven_hosting": "Applicable executed real external-provider/session or hosting evidence supplements local assertions; scope is stated explicitly.",
+    "incomplete": "A required interaction or postcondition remains unproven.",
+    "unverified": "No applicable executed evidence was found.",
+    "contradicted": "Executed evidence violates the requirement.",
+    "proven_agent_interaction": "Actual provider interaction independently verified in its stated fixture; no broader provider/backend claim."
+  },
+  "acceptance": [
+    {
+      "id": "A31",
+      "requirement": "Takeover presents natural-language options to the user; after selection, the Agent executes the selected runtime action.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "file": "tests/test_publication.py",
+          "function": "test_A03_A06_A08_takeover_fences_previous_release",
+          "assertions": [
+            "Takeover required result and category",
+            "Directly applies takeover option",
+            "New owner/session and exact parent are proved"
+          ],
+          "limits": [
+            "No Agent presents choices to a user",
+            "Does not assert the human-readable effect text"
+          ]
+        },
+        {
+          "file": "tests/test_resume_public_results.py",
+          "function": "test_takeover_offer_from_resume_remains_scoped_decision",
+          "assertions": [
+            "Resume returns decision_required",
+            "Decision category is takeover"
+          ],
+          "limits": [
+            "Typed public result only; no natural-language Agent interaction"
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/ownership-closure-evidence.json",
+          "assertions": [
+            "Sequential hosting takeover and new session identity"
+          ],
+          "scope": "Harness directly invokes the runtime decision option; not an Agent UX run."
+        },
+        {
+          "record": "docs/claude-takeover-failed-evidence.json",
+          "assertions": [
+            "Actual first Haiku session presented takeover/abort effects and requested explicit choice.",
+            "Actual fresh second session received a simulated explicit takeover selection but did not apply it.",
+            "Second session read prohibited private context contents into its model-visible trace.",
+            "Ref/owner/mainline remained unchanged; source remained clean with answer41."
+          ],
+          "scope": "Failed two-call local-Git Agent UX attempt; no overall acceptance pass."
+        },
+        {
+          "record": "docs/claude-takeover-followup-failed-evidence.json",
+          "assertions": [
+            "Primary reviewed retained native readonly loop and exact initial source HEAD/index/ref/owner/mainline.",
+            "Both actual traces omit private context contents.",
+            "Fresh second session still resumes before applying the selected decision, leaving takeover unexecuted."
+          ],
+          "scope": "Failed follow-up; automated first-turn parser could not prove a bounded readonly loop. No overall acceptance pass."
+        },
+        {
+          "record": "docs/claude-takeover-history-failed-evidence.json",
+          "assertions": [
+            "Third actual fresh call included prior assistant presentation and selected takeover.",
+            "No takeover occurred; ref/owner/source HEAD/index/mainline stayed unchanged.",
+            "Retained fixture canonical differs from the latest source template; newest conditional ordering remains untested."
+          ],
+          "scope": "Failed retained-fixture follow-up; not a latest-template acceptance run."
+        },
+        {
+          "record": "docs/claude-takeover-evidence.json",
+          "assertions": [
+            "Primary reviewed first actual session prose presenting takeover/abort effects and requesting user choice.",
+            "Second actual fresh session applies exactly selected decision/option, resumes ready/owned, then changes only managed app.",
+            "Original source HEAD/index, mainline and publication revision after ownership establishment are preserved.",
+            "New distinct session and private capability independently match actual Git owner records.",
+            "Private context absent from native traces/stderr; selected Claude settings/auth files unchanged."
+          ],
+          "scope": "Actual Haiku5.5/ClaudeCode2.1.296 with local bare Git and installed37-module-matching agentctl; simulated explicit choice and full public prior-decision context."
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A32",
+      "requirement": "A suspected test bug is handled in coding workflow, not the runtime decision mechanism.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_decisions.py",
+          "function": "test_A32_A33_project_semantics_cannot_enter_runtime_decisions",
+          "assertions": [
+            "test_bug category creation raises RuntimeFailure",
+            "Private decision record names remain unchanged"
+          ]
+        }
+      ],
+      "fixture": "Local bare-Git runtime private store.",
+      "gaps": []
+    },
+    {
+      "id": "A33",
+      "requirement": "Whether to add a product feature is outside the runtime decision mechanism.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_decisions.py",
+          "function": "test_A32_A33_project_semantics_cannot_enter_runtime_decisions",
+          "assertions": [
+            "product_feature category creation raises RuntimeFailure",
+            "Private decision record names remain unchanged"
+          ]
+        }
+      ],
+      "implementation": "src/agent_handoff/decisions.py::Decisions.create rejects categories outside the control-plane allowlist before writing.",
+      "fixture": "Local bare-Git runtime private store.",
+      "gaps": []
+    },
+    {
+      "id": "A34",
+      "requirement": "A takeover decision is invalidated when authority changes after it is proposed.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_publication.py",
+          "function": "test_stale_decision",
+          "assertions": [
+            "Owner release intentionally advances authority after takeover proposal",
+            "Old choice rejected/decision_required/code3, lifecycle stale",
+            "No apply push and post-release ref/owner/private trust/source HEAD/index/status/files unchanged"
+          ],
+          "limits": [
+            "Local bare-Git takeover; no Agent interaction claim."
+          ]
+        }
+      ],
+      "implementation": "src/agent_handoff/decisions.py::Decisions.check compares reviewed HEAD/owner to current values, finishes the decision as stale, and raises decision_required.",
+      "fixture": "Local bare remote and two runtime contexts.",
+      "gaps": []
+    },
+    {
+      "id": "A35",
+      "requirement": "The user may complete external OAuth/2FA that the Agent cannot perform, but is not asked to operate agentctl or perform Git recovery.",
+      "classification": "proven_agent_interaction",
+      "tests": [],
+      "implementation_note": "Installed actual Doppler missing-auth diagnostics and a fresh exact Haiku exclusive-MCP auth interaction are verified independently. The readonly task correctly preserves the initial free owner; resume is required before dependent managed work, not this diagnostic.",
+      "fixture": "Actual fresh Haiku 5.5, isolated local Git, synthetic missing-auth Doppler, exact two-tool MCP registry; Primary reviewed retained prose.",
+      "gaps": [],
+      "failed_live_evidence": [
+        "docs/claude-auth-failed-evidence.json",
+        "docs/claude-mcp-auth-failed-evidence.json",
+        "docs/claude-mcp-auth-second-evidence.json"
+      ],
+      "local_evidence": [
+        "docs/a35-installed-auth-diagnostic-evidence.json",
+        "docs/a35-a63-batch-verification.json",
+        "docs/provider-isolation-batch-verification.json"
+      ],
+      "successful_live_evidence": [
+        "docs/claude-mcp-auth-evidence.json"
+      ]
+    },
+    {
+      "id": "A36",
+      "requirement": "Working state referencing a nonexistent Plan fails validation before publication mutation.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_snapshots.py",
+          "function": "test_A36_missing_active_plan_rejected_before_publication",
+          "assertions": [
+            "State references P-MISSING",
+            "Snapshot raises RuntimeFailure",
+            "Authority HEAD remains unchanged"
+          ]
+        }
+      ],
+      "fixture": "Local bare remote and real snapshot publication path.",
+      "gaps": []
+    },
+    {
+      "id": "A37",
+      "requirement": "A current_step absent from the active Plan, including a step removed in the candidate snapshot, fails validation before publication.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_snapshots.py",
+          "function": "test_A37_invalid_active_cursor_rejected_before_checkpoint_or_handoff",
+          "assertions": [
+            "Publishes a valid working Plan baseline, then exercises checkpoint and handoff with a missing cursor and with the selected Plan removing the cursor step",
+            "Each invalid snapshot raises RuntimeFailure and backend.push is not called",
+            "Exact remote HEAD, full authority records (including state/owner), and current session identity remain unchanged",
+            "Original source HEAD, index bytes, selected local file bytes, and working-tree status remain unchanged by the rejected operation",
+            "No pending publication journal operation is created"
+          ]
+        }
+      ],
+      "fixture": "RepositoryFixture local bare remote; real Runtime.publish_snapshot and Plan validation path. The test establishes local runtime behavior only.",
+      "gaps": []
+    },
+    {
+      "id": "A38",
+      "requirement": "Inserting/reordering Plan steps preserves stable Step IDs and cursor identity.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_snapshots.py",
+          "function": "test_A38_step_insertion_and_reorder_preserve_cursor_identity",
+          "assertions": [
+            "Inserts S-NEW and reorders existing IDs",
+            "Published current_step remains S-001",
+            "Published IDs are S-NEW, S-002, S-001"
+          ]
+        }
+      ],
+      "implementation": "src/agent_handoff/plans.py::parse rejects duplicate Step IDs; validate resolves cursor by stable ID rather than ordinal.",
+      "fixture": "Local bare remote with committed Plan metadata.",
+      "gaps": []
+    },
+    {
+      "id": "A39",
+      "requirement": "Releasing ownership leaves a working Plan and cursor intact for a later session.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "file": "tests/test_snapshots.py",
+          "function": "test_A39_release_preserves_working_plan_and_cursor",
+          "assertions": [
+            "Exact committed state bytes preserved across release",
+            "Exact Plan content preserved"
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/ownership-closure-evidence.json",
+          "assertions": [
+            "A39 scoped as sequential hosting Plan lifecycle",
+            "Hosting script checks owner null, exact working state/cursor, and exact Plan bytes after release"
+          ],
+          "scope": "Current script digest matches the executed record; no in-flight race claim."
+        }
+      ],
+      "fixture": "Local bare remote plus isolated sequential GitHub publication ref.",
+      "gaps": []
+    },
+    {
+      "id": "A40",
+      "requirement": "A test summary without revision-bound test evidence remains unknown/invalid and is never reported passed.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_snapshots.py",
+          "function": "test_A40_claimed_test_summary_without_revision_evidence_is_unknown",
+          "assertions": [
+            "Checkpoint summary claims tests passed elsewhere",
+            "Result test_status is unknown"
+          ]
+        },
+        {
+          "file": "tests/test_git_public_results.py",
+          "function": "test_real_lifecycle_reports_match_contract_and_proof_requirements",
+          "assertions": [
+            "Public validator rejects test_status=passed without evidence"
+          ]
+        }
+      ],
+      "implementation": "src/agent_handoff/publication.py sets checkpoint test_status to unknown; public validator/schema reject passed.",
+      "fixture": "Local bare remote and public result contract.",
+      "gaps": []
+    }
+  ],
+  "material_gaps": [],
+  "A34_post_suite_verification": {
+    "tests": 1,
+    "passed": true,
+    "log_sha256": "6e17cc8d456166c208bb46bbd20a0099813cda4e04e71d4f27ace085792056c4"
+  }
+}

@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "design_sections": [
+    "\u00a77 Publication Integrity Violation",
+    "\u00a78.5 Same-session write capability",
+    "\u00a712 Resume and local preservation",
+    "\u00a713 Manual edits and external editor",
+    "\u00a720.4 Publication Integrity",
+    "\u00a720.5 Local Preservation / Concurrency"
+  ],
+  "spec_refs": [
+    "docs/spec.md \u00a76 Locks and Session Recovery",
+    "docs/spec.md \u00a77 Publication Transaction",
+    "docs/spec.md \u00a78 Crash, Unknown and Integrity",
+    "docs/spec.md \u00a79 Preservation, Snapshot and Resume",
+    "docs/spec.md \u00a716 Acceptance Plan and Traceability",
+    "docs/spec.md \u00a717 Delivery Gates"
+  ],
+  "scope": {
+    "local_runtime": "Tests use local bare Git repositories unless a row states otherwise.",
+    "hosting": "A25/A26 also use the executed isolated GitHub resume record; this does not generalize to every host.",
+    "process_scope": "Authority concurrency tests use spawned processes, but do not test two distinct checkouts concurrently mutating one session.",
+    "editor_scope": "A30 uses deterministic in-process reader/fault hooks, not an independently scheduled editor process.",
+    "limits": [
+      "No universal hosting or Windows requirement is inferred for A21-A24 or A27-A30.",
+      "Passing rows do not establish completion of the broader Design \u00a725 gates."
+    ]
+  },
+  "classification_legend": {
+    "proven_local": "Executed local runtime assertions cover the stated requirement.",
+    "proven_hosting": "Applicable executed hosting evidence supplements local assertions.",
+    "incomplete": "A required postcondition or scenario is not asserted.",
+    "unverified": "No applicable executed evidence was found.",
+    "contradicted": "Executed evidence violates the requirement."
+  },
+  "acceptance": [
+    {
+      "id": "A21",
+      "requirement": "A deleted registered publication ref is reported as an integrity violation and is not recreated.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_publication.py",
+          "function": "test_registered_ref_delete_cannot_reinitialize",
+          "assertions": [
+            "Deleted registered ref remains absent",
+            "No push on rejected/code7 initialization",
+            "Mainline/trust/source HEAD/index/status/staged+unstaged/untracked bytes preserved"
+          ],
+          "limits": [
+            "Local bare Git; no live hosting policy or fault-matrix claim."
+          ]
+        }
+      ],
+      "fixture": "Local bare remote and local source checkout.",
+      "gaps": []
+    },
+    {
+      "id": "A22",
+      "requirement": "A non-descendant publication rewrite stops further mutation and preserves local work.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_publication.py",
+          "function": "test_rewritten_history_stops_mutation",
+          "assertions": [
+            "Ref rewound to valid initial publication snapshot after trusted acquire",
+            "Release code7 and no push",
+            "Exact rewritten ref/owner bytes plus mainline/trust/source HEAD/index/status/bytes preserved"
+          ],
+          "limits": [
+            "Local bare Git; no live hosting policy or fault-matrix claim."
+          ]
+        }
+      ],
+      "fixture": "Local bare remote and local source checkout.",
+      "gaps": []
+    },
+    {
+      "id": "A23",
+      "requirement": "Hand-edited invalid owner/protocol metadata is not accepted as authority and cannot authorize mutation.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_publication.py",
+          "function": "test_A23_invalid_hand_edited_control_metadata_never_authorizes_mutation",
+          "assertions": [
+            "Publishes malformed owner and protocol records",
+            "Mutation fails with integrity/validation code",
+            "Invalid observed commit remains current",
+            "Trusted OID and dirty local edit remain unchanged"
+          ]
+        },
+        {
+          "file": "tests/test_publication.py",
+          "function": "test_A23_readonly_inspection_rejects_wrong_authority_config_and_invalid_plan",
+          "assertions": [
+            "Read-only inspection rejects invalid config/Plan",
+            "Integrity record, source index, and local edit remain unchanged"
+          ]
+        }
+      ],
+      "fixture": "Local bare remote and source checkout; invalid control data is committed through Git backend.",
+      "gaps": []
+    },
+    {
+      "id": "A24",
+      "requirement": "An integrity decision becomes stale if publication HEAD changes after the decision is proposed.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_integrity_records.py",
+          "function": "test_integrity_decision_stales_when_publication_head_changes",
+          "assertions": [
+            "Actual valid rollback violation produces adopt decision",
+            "External valid commit advances HEAD after proposal",
+            "Old adopt decision rejected/status decision_required/code3 and stale lifecycle",
+            "No push/trust adoption, competing ref/owner and source state unchanged"
+          ],
+          "limits": [
+            "Local bare Git; no live hosting policy or fault-matrix claim."
+          ]
+        }
+      ],
+      "fixture": "Local bare remote.",
+      "gaps": []
+    },
+    {
+      "id": "A25",
+      "requirement": "Dirty tracked content and index state are retained before resume; original checkout is not reset or cleaned.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "file": "tests/test_resume.py",
+          "function": "test_A25_A26_dirty_index_binary_ignored_preserved",
+          "assertions": [
+            "Different staged and unstaged contents",
+            "Exact index bytes unchanged",
+            "Unstaged tracked content unchanged",
+            "Resume returns not_ready"
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-resume-evidence.md",
+          "assertions": [
+            "Source HEAD/index/status and selected-content hashes unchanged through resume, old-checkout rejection, and managed release"
+          ],
+          "scope": "Executed GitHub resume scenario with separate CLI processes."
+        }
+      ],
+      "fixture": "Local bare remote plus isolated executed GitHub ref.",
+      "gaps": []
+    },
+    {
+      "id": "A26",
+      "requirement": "Untracked binary and ignored files are neither automatically removed nor uploaded.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "file": "tests/test_resume.py",
+          "function": "test_A25_A26_dirty_index_binary_ignored_preserved",
+          "assertions": [
+            "Ignored binary bytes remain",
+            "Untracked binary absent from managed checkout"
+          ],
+          "limits": [
+            "Local test does not reread untracked source bytes after resume"
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-resume-evidence.md",
+          "assertions": [
+            "Untracked binary and ignored dummy local file remain unchanged in source and absent from managed snapshot"
+          ],
+          "scope": "Executed isolated hosting scenario."
+        }
+      ],
+      "fixture": "Local bare remote plus isolated executed GitHub ref.",
+      "gaps": []
+    },
+    {
+      "id": "A27",
+      "requirement": "Original checkout retains local-only commits while managed checkout contains only the published snapshot.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_resume.py",
+          "function": "test_A27_local_only_commit_is_retained",
+          "assertions": [
+            "Saves and rechecks source HEAD",
+            "Resume is not_ready",
+            "Managed code equals published original content"
+          ],
+          "limits": [
+            "Commit reachability is implied by unchanged branch HEAD, not separately enumerated"
+          ]
+        }
+      ],
+      "fixture": "Local bare remote and separate managed checkout.",
+      "gaps": []
+    },
+    {
+      "id": "A28",
+      "requirement": "Merge/rebase in-progress state is preserved and destructive work is isolated or stopped.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_resume.py",
+          "function": "test_A28_rebase_in_progress_retained_while_resume_isolates_checkout",
+          "assertions": [
+            "Captures all rebase metadata files",
+            "Checks exact HEAD/index/worktree bytes",
+            "Resume is not_ready in a different managed checkout",
+            "Metadata remains byte-identical"
+          ]
+        },
+        {
+          "file": "tests/test_resume.py",
+          "function": "test_A28_merge_in_progress_retained_while_resume_isolates_checkout",
+          "assertions": [
+            "Checks MERGE_HEAD/index/worktree bytes",
+            "Resume is not_ready in a different managed checkout",
+            "Preservation evidence marks merge/rebase"
+          ]
+        }
+      ],
+      "fixture": "Real local Git merge/rebase states over the local bare-remote fixture.",
+      "gaps": []
+    },
+    {
+      "id": "A29",
+      "requirement": "Same-session mutations from two checkout paths are serialized; only one checkout is write-capable.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_publication.py",
+          "function": "test_checkout_binding_and_context_not_implicitly_shared",
+          "assertions": [
+            "A different context cannot recover through the same checkout"
+          ]
+        },
+        {
+          "file": "tests/test_publication.py",
+          "function": "test_kernel_lock_rejects_second_writer",
+          "assertions": [
+            "Held repository lock causes acquire to reject with code 4"
+          ],
+          "limits": [
+            "Same process and checkout; does not exercise separate processes or checkout binding together"
+          ]
+        },
+        {
+          "file": "tests/test_authority_concurrency.py",
+          "function": "test_same_caller_competing_transitions_have_one_local_commit",
+          "assertions": [
+            "Spawned processes and barriers serialize authority transitions"
+          ],
+          "limits": [
+            "Authority transitions, not same-session mutation from two checkout paths"
+          ]
+        },
+        {
+          "file": "tests/test_resume.py",
+          "function": "test_clean_resume_materializes_and_transfers_binding",
+          "assertions": [
+            "Binding transfers sequentially to managed checkout",
+            "Old checkout recovery is rejected"
+          ],
+          "limits": [
+            "No simultaneous mutation attempt"
+          ]
+        },
+        {
+          "file": "tests/test_session_concurrency.py",
+          "function": "test_A29_same_session_two_checkouts_have_only_one_process_writer",
+          "assertions": [
+            "Independent spawn processes use same context/private store/remote session and distinct checkout paths",
+            "First bound writer held at locked send barrier; contender rejected for exact kernel-lock reason",
+            "After winner completion contender rejected for exact checkout-binding reason",
+            "Exactly one new commit parented by prior ref with winner payload and original session",
+            "Both source HEAD/index/contents/status unchanged; private checkout binding unchanged"
+          ],
+          "limits": [
+            "Local bare remote and Linux flock; no live hosting in-flight race claim."
+          ]
+        }
+      ],
+      "implementation_note": "src/agent_handoff/locks.py uses nonblocking fcntl flock for repository, session, and checkout lock files.",
+      "fixture": "Local filesystem/backend; no executed same-session, distinct-checkout process race found.",
+      "gaps": []
+    },
+    {
+      "id": "A30",
+      "requirement": "Snapshot collection detects changes made outside command-lock protection and does not mislabel them as a consistent snapshot.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_snapshots.py",
+          "function": "test_A30_editor_changes_collection_is_rejected",
+          "assertions": [
+            "Patches reader to modify selected content between reads",
+            "Snapshot raises RuntimeFailure"
+          ]
+        },
+        {
+          "file": "tests/test_snapshots.py",
+          "function": "test_A15_post_snapshot_editor_changes_retained_for_checkpoint_and_handoff",
+          "assertions": [
+            "Deterministic post-capture edit stays local",
+            "Published bytes remain frozen",
+            "Index/HEAD and later binary remain local"
+          ]
+        }
+      ],
+      "fixture": "Deterministic in-process hooks, not an independently scheduled editor process; this matches the deterministic-hook test scope and does not claim OS-level editor exclusion.",
+      "gaps": []
+    }
+  ],
+  "concrete_gaps": [],
+  "A29_execution": {
+    "tests": 1,
+    "passed": true,
+    "seconds": 0.81,
+    "log_sha256": "4fb7344f52b384fe8b642b94428d1280d431f104fc7e34d5cb790b61cef56e3f"
+  },
+  "latest_verification": {
+    "full_tests": 252,
+    "seconds": 83.301,
+    "passed": true,
+    "log_sha256": "f11fd42574c086b34d3dc9c5c500d62c4f812ff028289d90d392eed39041437c"
+  }
+}

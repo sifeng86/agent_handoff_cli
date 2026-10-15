@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Private preservation evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "handle_id",
+    "original_checkout",
+    "HEAD",
+    "scope",
+    "method",
+    "index_evidence",
+    "index_entries_hex",
+    "status_entries_hex",
+    "tracked_changes",
+    "untracked",
+    "ignored",
+    "local_commits",
+    "merge_or_rebase",
+    "verification"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "handle_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "original_checkout": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^/"
+    },
+    "HEAD": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "scope": {
+      "const": "entire original checkout retained"
+    },
+    "method": {
+      "const": "retain-original"
+    },
+    "index_evidence": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "index_entries_hex": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{2})*$"
+    },
+    "status_entries_hex": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{2})*$"
+    },
+    "tracked_changes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "untracked": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "ignored": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "local_commits": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+      }
+    },
+    "merge_or_rebase": {
+      "type": "boolean"
+    },
+    "verification": {
+      "const": "No checkout/index writes are performed; original directory remains available."
+    }
+  },
+  "$comment": "Runtime also verifies canonical path, filename/handle/checkout linkage, exact SHA-256 of NUL-delimited stage bytes, supported stage syntax, status classification/termination and counts derived from raw porcelain evidence."
+}

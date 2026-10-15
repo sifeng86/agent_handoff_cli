@@ -1,0 +1,21 @@
+{
+  "acceptance_id": "A35",
+  "installed_wheel_real_doppler_missing_auth_verified": true,
+  "actual_cli_exit": 6,
+  "shared_read_failure": "authentication_required",
+  "local_availability": "completed",
+  "required_missing": [],
+  "installed_runtime_modules_match_source": 37,
+  "doppler_host_unchanged": true,
+  "state": {
+    "source_unchanged": true,
+    "source_index_unchanged": true,
+    "mainline_unchanged": true,
+    "owner_capability_proved": false,
+    "resume_observed": false,
+    "no_feature_publication": true
+  },
+  "fresh_provider_executed": false,
+  "OAuth_2FA_requirements_verified": false,
+  "remote_write_attempted": false
+}

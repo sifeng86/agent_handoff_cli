@@ -1,0 +1,15 @@
+# Fresh Claude Haiku 5.5 bootstrap evidence
+
+On 2026-10-13, Claude Code 2.1.296 completed a fresh API-backed session using the exact model `claude-haiku-5-5`, with no fallback model or resumed conversation. It read the committed canonical instructions, completed readonly `status`, created a private context, obtained `resume ready/owned`, and then changed only managed `app.py` to return 42. The original source HEAD, worktree and index bytes remained unchanged. The publication ref stayed at the acquisition revision, and the private session capability was independently proved against the actual Git owner records. The [machine-readable record](claude-bootstrap-evidence.json) contains scoped results and trace/template hashes; raw logs and private context remain outside the repository.
+
+The first attempt disabled the project settings source, so Claude did not load `CLAUDE.md` and directly edited the isolated original checkout; that attempt failed. After enabling project settings, the second attempt read the instructions and inspected the authority but stopped before creating a context. The instructions did not give the concrete `context create` syntax, and CLI help only listed command/action placeholders. The canonical instructions now specify both context creation and resume arguments. The third actual session passed the harness directly. Neither failed fixture was reused or counted as a pass.
+
+Reproduce with a verified installed CLI and authenticated Claude Code:
+
+The former native-tool reproduction command is currently disabled with `legacy_provider_profile_not_isolated`. It gave the model private-root read access; historical evidence remains retained, and a confined replacement is pending.
+
+The prompt supplies approved authority/ref/private-root facts and the feature request. Bootstrap commands come from the project's `CLAUDE.md` and canonical instructions. The invocation enables only the project settings source, disables hooks, skills and configured MCP servers, retains permission checks, and explicitly permits Bash/Read/Edit/Write tools. Native tool-use/result IDs are correlated and normalized for the shared ordering verifier; actual wrapper results, final Git state and capability records provide additional checks. Native tool failures use Claude's `is_error` indicator rather than a separately reported process exit code.
+
+This proves A59 for this model, CLI version and isolated local Git fixture. It does not prove every Claude startup variant, actual GitHub transport, or a cross-provider takeover. The byte guard covers `settings.json` and `.credentials.json`; `.claude.json`, caches, metadata and full host preservation are outside that guard. Private context contents were absent from model-visible stdout/stderr. The broader privacy, host and backend fault matrices remain open.
+
+Model identity and CLI options were checked against the official [Haiku 5.5 model documentation](https://platform.claude.com/docs/en/models/haiku-5-5/overview) and [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference).

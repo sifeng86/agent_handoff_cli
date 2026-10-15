@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "acceptance_id": "A31",
+  "provider": "claude",
+  "model": "claude-haiku-5-5",
+  "actual_provider_calls": 2,
+  "mechanical_scenario_passed": false,
+  "agent_interaction_verified": false,
+  "first_turn_natural_language_options_reviewed": true,
+  "first_turn_takeover_and_abort_effects_presented": true,
+  "first_turn_explicit_choice_requested": true,
+  "first_turn_no_feature_mutation": true,
+  "first_turn_retained_trace_revalidated_after_harness_fix": true,
+  "second_turn_user_choice_supplied": true,
+  "second_turn_takeover_applied": false,
+  "second_turn_context_contents_in_model_visible_trace": true,
+  "second_turn_context_read_violation": true,
+  "publication_ref_unchanged": true,
+  "prior_owner_unchanged": true,
+  "mainline_unchanged": true,
+  "source_remains_clean": true,
+  "source_app_returns_41": true,
+  "provider_settings_and_auth_unchanged": true,
+  "settings_guard_scope": "settings.json/.credentials.json only",
+  "first_trace_sha256": "baf9cbf0340d3aa1492d60d8222cee37d8749e6569994fc30d36c6fef0ff5240",
+  "second_trace_sha256": "e15b0531dbf6d6cd6983a3f5ce0bd7a637857448eb29aa25d8f57bbfc36ea75e",
+  "harness_sha256_at_revalidation": "a5876926804941538d9c1a7fea4264504ff8063b72ddb7631c08d5700a1a2a60",
+  "continuation_driver_sha256": "ee87db28640088a2c9176a4934a110d095b159773218cf08f72c43f74a281fd7",
+  "limitations": [
+    "No original pre-first-turn index digest was persisted by this failed run; no exact original-index proof claimed.",
+    "No GitHub/Doppler provider or host-wide preservation claim."
+  ],
+  "failure_reasons": [
+    "Initial verifier rejected readonly stderr merge/help pipeline; fixed and first native trace revalidated.",
+    "Fresh second Agent read prohibited private context and did not apply selected takeover; cannot count as A31 pass."
+  ],
+  "follow_up": "Clarify canonical context reuse and approved decision apply before resume; test a fresh fixture, not this context."
+}

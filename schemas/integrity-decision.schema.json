@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Private publication integrity review observations",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "decision_id",
+    "repository_identity",
+    "observed_head",
+    "observed_owner_session",
+    "snapshot_valid",
+    "preservation_handle",
+    "previous_trust_digest",
+    "previous_trust_status",
+    "previous_trusted_oid",
+    "secret_binding_digest"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "repository_identity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "observed_head": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "observed_owner_session": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "snapshot_valid": {
+      "type": "boolean"
+    },
+    "preservation_handle": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "previous_trust_digest": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "previous_trust_status": {
+      "enum": [
+        "valid",
+        "missing",
+        "invalid"
+      ]
+    },
+    "previous_trusted_oid": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "secret_binding_digest": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "snapshot_valid": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "observed_head": {
+            "type": "string",
+            "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "previous_trust_status": {
+            "const": "valid"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "previous_trusted_oid": {
+            "type": "string",
+            "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+          },
+          "previous_trust_digest": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "previous_trusted_oid": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "previous_trust_status": {
+            "const": "missing"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "previous_trust_digest": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "previous_trust_digest": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    }
+  ],
+  "$comment": "Private dependency digests never enter public results. Runtime additionally validates filename/public intent linkage and reobserves exact HEAD, owner, trust and secret binding before adopting."
+}

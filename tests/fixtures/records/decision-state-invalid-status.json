@@ -1,0 +1,10 @@
+{
+  "schema": "decision-state",
+  "record": {
+    "schema_version": 1,
+    "status": "approved-by-id",
+    "checkout_identity": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "context_identity": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  },
+  "valid": false
+}

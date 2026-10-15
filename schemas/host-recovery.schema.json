@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "title": "Private journal for conditional one-file host restoration",
+  "required": [
+    "schema_version",
+    "operation_id",
+    "backup_handle",
+    "expected_handle",
+    "phase",
+    "outcome",
+    "staging"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "operation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "backup_handle": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "expected_handle": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "phase": {
+      "enum": [
+        "prepared",
+        "resolved"
+      ]
+    },
+    "outcome": {
+      "enum": [
+        null,
+        "restored",
+        "not_restored"
+      ]
+    },
+    "staging": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "host-backup.schema.json#/properties/snapshot"
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "phase": {
+            "const": "prepared"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "outcome": {
+            "enum": [
+              "restored",
+              "not_restored"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "$comment": "Runtime validates filename identity, same-path backup linkage, expected-current observation and actual restored bytes/ownership/mode/mtime. Resolve never replays host replacement. Staging name derives from operation_id; only exact journaled staging identity may be removed. Unknown/edited staging is preserved and prevents terminal resolution."
+}

@@ -1,0 +1,56 @@
+{
+  "batch": "A35 typed authentication diagnostics and A63 stopping integration",
+  "full_discovery": {
+    "command": "PYTHONPATH=src:tests python3 -m unittest discover -s tests -q",
+    "tests": 294,
+    "seconds": 112.17,
+    "exit_code": 1,
+    "assertion_failures": 0,
+    "setup_errors": 2,
+    "setup_error_reason": "sandbox socket creation denied for test_git_tcp_timeout",
+    "log_sha256": "1b699c31712e5a1fae03c2a899680f55731a41a3fc7d43cc278c5d9d44c47655"
+  },
+  "targeted_environment_retry": {
+    "command": "PYTHONPATH=src:tests python3 -m unittest test_git_tcp_timeout -q",
+    "tests": 2,
+    "passed": true,
+    "seconds": 4.396,
+    "network_scope": "127.0.0.1 loopback Git fixtures only, no model/API",
+    "log_sha256": "d910986d9ae2f2be840e959b0c09206e020bfa94f3803ea747ad99b0cca9dce9"
+  },
+  "combined_scope_passed": true,
+  "single_exit_zero_full_run": false,
+  "harness_focused": {
+    "tests": 9,
+    "passed": true,
+    "seconds": 3.908,
+    "log_sha256": "209e3f4a9cf340deebe63411ccafb2441e979b85d864068d1f8ce9bb760b1e51"
+  },
+  "runtime_focused_unique_tests": 53,
+  "runtime_focused_passed": true,
+  "remaining_acceptance_ids": [
+    "A17",
+    "A35",
+    "A44",
+    "A46",
+    "A54",
+    "A58"
+  ],
+  "new_provider_call_started": false,
+  "provider_retry_auto_review_rejected": true,
+  "provider_rejection_reason": "Known prior context capability disclosure; prompt guards alone lack OS confinement and user authorization to expose that token.",
+  "prior_failed_record": "docs/claude-auth-failed-evidence.json",
+  "full_goal_complete": false,
+  "package": {
+    "passed": true,
+    "artifact_root": "/tmp/agent-handoff-package-fcdu2ket",
+    "installed_routes": [
+      "wheel",
+      "sdist"
+    ],
+    "resource_count_each": 42,
+    "protected_host_changes": []
+  },
+  "installed_auth_diagnostic_evidence": "docs/a35-installed-auth-diagnostic-evidence.json",
+  "artifact_docs_snapshot_note": "The archives were staged before subsequent package-report fields and installed-Doppler-probe documentation updates. Runtime, schemas and bootstrap assets are current; final workspace evidence is linked from dist/package-verification.json."
+}

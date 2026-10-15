@@ -1,0 +1,11 @@
+{
+  "schema": "config",
+  "record": {
+    "schema_version": 1,
+    "authority": "https://github.com/example/isolated-fixture.git",
+    "publication_ref": "refs/heads/publication",
+    "mainline_ref": "refs/heads/main",
+    "plan_directory": "plans"
+  },
+  "valid": true
+}

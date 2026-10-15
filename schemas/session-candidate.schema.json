@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "session-candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "protocol_version",
+    "repository_identity",
+    "publication_ref",
+    "session_id",
+    "acquisition_operation_id",
+    "acquisition_oid",
+    "checkout_identity",
+    "context_identity",
+    "machine_label",
+    "provider_label",
+    "revoked"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "protocol_version": {
+      "const": "1.2"
+    },
+    "repository_identity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "publication_ref": {
+      "type": "string",
+      "pattern": "^refs/heads/[^\\u0000-\\u001f\\u007f]+$"
+    },
+    "session_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "acquisition_operation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "acquisition_oid": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "checkout_identity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "context_identity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "machine_label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revoked": {
+      "type": "boolean"
+    }
+  }
+}

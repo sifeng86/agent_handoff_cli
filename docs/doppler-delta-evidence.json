@@ -1,0 +1,30 @@
+{
+  "acceptance_id": "A45",
+  "passed": true,
+  "runtime_remote_write_attempted": false,
+  "cleanup_verified": true,
+  "provider": "Doppler",
+  "project": "agent-handoff-test",
+  "config": "dev",
+  "runner_sha256": "eefe31306d9c685dad71e99ace2705d4610c358c99a0df978aad5e391d669b89",
+  "remote_only_delta_verified": true,
+  "local_material_verified": true,
+  "old_local_backed_up_before_replacement": true,
+  "persisted_baseline_verified": true,
+  "baseline_operation_identity_verified": true,
+  "source_head_index_ref_owner_mainline_unchanged": true,
+  "public_value_leak": false,
+  "fixture_external_write_calls": 3,
+  "fixture_write_outcome_unknown": false,
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-13T10:21:55.632905+00:00",
+  "doppler_cli_version": "3.77.0",
+  "primary_reviewed": true,
+  "focused_driver_tests": 3,
+  "focused_driver_seconds": 0.779,
+  "focused_driver_test_source_sha256": "e38a4e1f868d09b92229f84c393ac22eb16505de852630920605df4cc610647b",
+  "scope": "One ordinary disposable key, real isolated Doppler scoped reads and actual local SecretService; external CLI seed/update/delete events, not runtime uploads.",
+  "limitations": [
+    "No claim of provider write fencing, timeout/permission matrix, PEM delta, installed CLI coverage, or full A54 leak coverage."
+  ]
+}

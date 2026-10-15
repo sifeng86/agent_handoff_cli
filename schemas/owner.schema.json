@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Owner record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "owner"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "extensions": {"type": "object"},
+    "owner": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["session_id", "acquisition_operation_id", "machine_label", "provider_label"],
+          "properties": {
+            "session_id": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+            "acquisition_operation_id": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+            "machine_label": {"type": "string", "minLength": 1},
+            "provider_label": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    }
+  }
+}

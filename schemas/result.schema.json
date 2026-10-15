@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Machine-readable runtime result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "command",
+    "status",
+    "operation_id",
+    "published_revision",
+    "code_publication",
+    "ownership",
+    "secrets_shared",
+    "decision",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "command": {
+      "enum": [
+        "acquire",
+        "authority",
+        "authority apply",
+        "authority propose",
+        "authority resolve",
+        "checkpoint",
+        "context",
+        "context create",
+        "decision",
+        "decision apply",
+        "decision propose-integrity",
+        "done",
+        "handoff",
+        "host",
+        "host backup",
+        "host inspect",
+        "host resolve",
+        "host restore",
+        "host verify",
+        "host verify-backup",
+        "init",
+        "inspect",
+        "operation",
+        "recover-ownership",
+        "recover-session",
+        "release",
+        "resume",
+        "secrets",
+        "secrets apply",
+        "secrets configure",
+        "secrets decision apply",
+        "secrets inspect",
+        "secrets reconcile",
+        "secrets resolve",
+        "secrets verify",
+        "status",
+        "takeover",
+        "unknown"
+      ]
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "ready",
+        "not_ready",
+        "decision_required",
+        "rejected",
+        "unknown",
+        "invalid",
+        "unsupported"
+      ]
+    },
+    "operation_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "published_revision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "code_publication": {
+      "enum": [
+        "published",
+        "rejected",
+        "publication_unknown",
+        "local_only",
+        "not_attempted"
+      ]
+    },
+    "ownership": {
+      "enum": [
+        "owned",
+        "released",
+        "fenced",
+        "ownership_pending",
+        "unowned",
+        "unknown"
+      ]
+    },
+    "secrets_shared": {
+      "enum": [
+        true,
+        false,
+        "partial",
+        "unknown",
+        null
+      ]
+    },
+    "decision": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "next_action": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "pattern": "^host(?: |$)"
+          }
+        }
+      },
+      "then": {
+        "$ref": "host-result.schema.json"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "pattern": "^authority(?: |$)"
+          }
+        }
+      },
+      "then": {
+        "$ref": "authority-result.schema.json"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "pattern": "^(?:inspect|status|context)(?: |$)"
+          }
+        }
+      },
+      "then": {
+        "$ref": "info-result.schema.json"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "enum": [
+              "init",
+              "acquire",
+              "takeover",
+              "release",
+              "recover-session",
+              "operation",
+              "checkpoint",
+              "done",
+              "handoff"
+            ]
+          }
+        }
+      },
+      "then": {
+        "$ref": "git-result.schema.json"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "resume"
+          }
+        }
+      },
+      "then": {
+        "$ref": "resume-result.schema.json"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "pattern": "^decision(?: |$)"
+          }
+        }
+      },
+      "then": {
+        "$ref": "control-result.schema.json"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "pattern": "^secrets(?: |$)"
+          }
+        }
+      },
+      "then": {
+        "$ref": "secrets-result.schema.json"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "enum": [
+              "unknown",
+              "recover-ownership"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {
+            "not": {
+              "enum": [
+                "completed",
+                "ready"
+              ]
+            }
+          },
+          "operation_id": {
+            "type": "null"
+          },
+          "published_revision": {
+            "type": "null"
+          },
+          "code_publication": {
+            "const": "not_attempted"
+          },
+          "ownership": {
+            "const": "unknown"
+          },
+          "secrets_shared": {
+            "type": "null"
+          },
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {}
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "$comment": "Every registered command routes to a closed family schema; unknown/deprecated labels produce generic errors only. Semantic backend proof remains the responsibility of the executing runtime."
+}

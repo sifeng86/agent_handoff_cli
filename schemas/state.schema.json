@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "State record (foundation subset)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "active_plan", "current_step", "blocker", "summary"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "status": {"enum": ["idle", "working", "blocked"]},
+    "active_plan": {"type": ["string", "null"], "minLength": 1},
+    "current_step": {"type": ["string", "null"], "minLength": 1},
+    "blocker": {"oneOf": [{"type": "null"}, {"type": "object", "additionalProperties": false,
+      "required": ["kind", "summary"], "properties": {"kind": {"const": "advisory"}, "summary": {"type": "string"}}}]},
+    "summary": {"type": "string"},
+    "extensions": {"type": "object"}
+  }
+}

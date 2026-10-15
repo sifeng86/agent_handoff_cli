@@ -1,0 +1,19 @@
+{
+  "acceptance_id": "A58",
+  "empty_fixture_checkout_unchanged": true,
+  "global_host_changes_attempted": false,
+  "global_host_snapshot_performed": false,
+  "installed_cli_help_before_and_after": true,
+  "installed_sdk_backup_verified": true,
+  "launcher_bytes_mode_owner_restored": true,
+  "limitations": "This proves installed SDK use only; this wheel has no installer repair CLI command, and no comprehensive global host snapshot was run.",
+  "package_smoke_wheel_and_sdist_passed": true,
+  "passed": true,
+  "pre_replace_callback_saw_broken_backup": true,
+  "repair_modules_from_prefix": true,
+  "schema_version": 1,
+  "scope": "installed wheel SDK repair in a fresh isolated venv; source wrapper/subcommand is outside the wheel",
+  "unrelated_prefix_bytes_modes_symlinks_preserved": true,
+  "primary_retained_backups_and_terminal_journal_verified": true,
+  "post_repair_cli_help_preserves_unrelated_prefix": true
+}

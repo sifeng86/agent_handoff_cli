@@ -1,0 +1,416 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Strict public authority selection result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "command",
+    "status",
+    "operation_id",
+    "published_revision",
+    "code_publication",
+    "ownership",
+    "secrets_shared",
+    "decision",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "command": {
+      "enum": [
+        "authority",
+        "authority propose",
+        "authority apply",
+        "authority resolve"
+      ]
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "not_ready",
+        "decision_required",
+        "rejected",
+        "unknown",
+        "invalid",
+        "unsupported"
+      ]
+    },
+    "operation_id": {
+      "type": "null"
+    },
+    "published_revision": {
+      "type": "null"
+    },
+    "code_publication": {
+      "const": "not_attempted"
+    },
+    "ownership": {
+      "const": "unknown"
+    },
+    "secrets_shared": {
+      "type": "null"
+    },
+    "decision": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/authority_decision"
+        }
+      ]
+    },
+    "next_action": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "preservation_handle": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "transition_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "transition_outcome": {
+      "enum": [
+        "selected",
+        "not_selected"
+      ]
+    },
+    "selected_authority_identity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "authority"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {
+            "not": {
+              "const": "completed"
+            }
+          },
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {}
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "authority propose"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {},
+          "next_action": {},
+          "preservation_handle": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "decision_required"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "preservation_handle"
+              ],
+              "properties": {
+                "decision": {
+                  "$ref": "#/$defs/authority_decision"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "decision": {
+                  "type": "null"
+                },
+                "status": {
+                  "not": {
+                    "const": "completed"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "authority apply"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {},
+          "transition_id": {},
+          "transition_outcome": {
+            "const": "selected"
+          },
+          "selected_authority_identity": {}
+        },
+        "additionalProperties": false,
+        "dependentRequired": {
+          "transition_id": [
+            "transition_id",
+            "transition_outcome",
+            "selected_authority_identity"
+          ],
+          "transition_outcome": [
+            "transition_id",
+            "transition_outcome",
+            "selected_authority_identity"
+          ],
+          "selected_authority_identity": [
+            "transition_id",
+            "transition_outcome",
+            "selected_authority_identity"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "authority resolve"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {},
+          "transition_id": {},
+          "transition_outcome": {},
+          "selected_authority_identity": {}
+        },
+        "additionalProperties": false,
+        "dependentRequired": {
+          "transition_id": [
+            "transition_id",
+            "transition_outcome",
+            "selected_authority_identity"
+          ],
+          "transition_outcome": [
+            "transition_id",
+            "transition_outcome",
+            "selected_authority_identity"
+          ],
+          "selected_authority_identity": [
+            "transition_id",
+            "transition_outcome",
+            "selected_authority_identity"
+          ]
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "transition_id",
+                "transition_outcome",
+                "selected_authority_identity"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "authority_decision": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Immutable decision envelope",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "decision_id",
+        "category",
+        "repository_identity",
+        "publication_ref",
+        "observed_head",
+        "observed_owner_session",
+        "destination_identity",
+        "reason",
+        "options",
+        "invalidated_by"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "category": {
+          "const": "authority_binding"
+        },
+        "repository_identity": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "publication_ref": {
+          "type": "string",
+          "pattern": "^refs/heads/[^\\u0000-\\u001f\\u007f]+$"
+        },
+        "observed_head": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "type": "string"
+        },
+        "observed_owner_session": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "destination_identity": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "reason": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "option_id",
+              "effect"
+            ],
+            "properties": {
+              "option_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "effect": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          },
+          "maxItems": 2,
+          "prefixItems": [
+            {
+              "properties": {
+                "option_id": {
+                  "const": "switch"
+                }
+              }
+            },
+            {
+              "properties": {
+                "option_id": {
+                  "const": "abort"
+                }
+              }
+            }
+          ]
+        },
+        "invalidated_by": {
+          "const": [
+            "authority_head_change",
+            "owner_change",
+            "destination_change",
+            "relevant_secret_state_change"
+          ]
+        }
+      }
+    }
+  },
+  "$comment": "No private material, provider grant or publication/ownership claims. Runtime additionally validates decision options and distinct source/target identities; selected/not_selected are local selection facts only."
+}

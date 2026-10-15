@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-15",
+  "status": "verified_basic_release",
+  "candidate_payload_comparison": {
+    "matches_current": true,
+    "runtime_modules": 38,
+    "scripts": 24,
+    "tests": 88,
+    "schemas": 34,
+    "template_files": 8,
+    "scope": "Every current source/helper/test/schema/template file matches the installed source archive; every runtime module also matches the wheel. Documentation updates are separate."
+  },
+  "approved_contract": "Basic per-key Doppler synchronization and observation-based no-replay recovery; no atomic cross-service transaction guarantee.",
+  "focused_runtime_tests": {
+    "tests": 65,
+    "seconds": 30.168,
+    "passed": true
+  },
+  "driver_tests": {
+    "tests": 7,
+    "seconds": 3.507,
+    "passed": true,
+    "subsequent_change": "Escaped JSON scan included in passing full suite."
+  },
+  "package_verification": {
+    "artifact_root": "/tmp/agent-handoff-package-vhisy2ix",
+    "build_tools": "/tmp/agent-handoff-final-buildtools",
+    "setuptools": "75.8.0",
+    "wheel_and_sdist_install_passed": true,
+    "flows": [
+      "init",
+      "acquire",
+      "recover-session",
+      "release",
+      "host backup/verify-backup/restore/resolve",
+      "authority propose/apply/source fencing/target lifecycle"
+    ],
+    "resources_verified": 42,
+    "changed_host_categories": [],
+    "host_scope": "Selected Linux firewall/git/network/package_sources/provider/shell/ssh/vpn entries; services/users_security unverifiable.",
+    "artifacts": [
+      {
+        "path": "dist/basic-candidate/agent_handoff-0.1.0-py3-none-any.whl",
+        "sha256": "cae48a0ffcaa961d23f2d586967f50082aef359fa99aead85efe88307bcbc5ce"
+      },
+      {
+        "path": "dist/basic-candidate/agent_handoff-0.1.0.tar.gz",
+        "sha256": "60c9d1a4568f51a245f57f23fb775cfc7ba582989a7e4c0ed36df0172a9425d2"
+      }
+    ]
+  },
+  "remaining": [],
+  "live_doppler_runs_this_resume": 1,
+  "paid_model_calls_this_resume": 0,
+  "approval": "Explicit final acceptance authorization received and used; no paid model calls.",
+  "full_suite": {
+    "command": "PYTHONPATH=src:tests python3 -m unittest discover -s tests -q",
+    "tests": 444,
+    "seconds": 131.929,
+    "passed": true,
+    "explicit_sandbox_approval": true
+  },
+  "live_doppler": "docs/doppler-basic-evidence.json",
+  "delivery_note": "Final source archive refresh changes documentation only. Final delivered hashes are recorded externally in dist/package-verification.json to avoid self-reference."
+}

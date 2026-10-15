@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-14",
+  "acceptance_id": "A54",
+  "design_requirement": "Secret values must not appear in logs or error output.",
+  "normative_context": [
+    {
+      "source": "Design §20.8, A54",
+      "quote": "log/error output | 不得出現 secret value"
+    },
+    {
+      "source": "Design §18 security requirements",
+      "quote": "不打印 secret value、不 dump process env、不把 credential/token URL 放入 logs。若 subprocess error 可能包含 secret，先 redact/sanitize 再交給 model。"
+    },
+    {
+      "source": "Design §8.3 and spec §15",
+      "quote": "Local session record 是 capability material；spec redaction tests cover stdout/stderr、tracebacks、journal-visible errors、Git trailers、summary、model-facing output, and protect hashes/token URLs/private envelopes at the same level."
+    }
+  ],
+  "retained_incidents": [
+    {
+      "record": "docs/claude-auth-failed-evidence.json",
+      "failure_category": "private_context_read_and_token_disclosed_to_native_trace",
+      "profile": "Legacy Claude CLI profile with Bash/Read/Edit/Write and the actor private root added as a readable tool directory.",
+      "root_cause": "The model opened the opaque private context file through an allowed native tool; the resulting capability material entered the native model trace.",
+      "current_defense": "The current AGENTS.md and CLAUDE.md wrapper instruct the Agent to read canonical instructions separately and never open a supplied context file. The exclusive-MCP broker denies unapproved context reads.",
+      "coverage_gap": "The instruction is a prompt rule, not an OS boundary. The legacy launch builder still grants the private directory and native file/shell tools; the earlier incident proves the read path is real."
+    },
+    {
+      "record": "docs/claude-takeover-failed-evidence.json",
+      "failure_category": "second_turn_context_read_violation",
+      "profile": "Legacy Claude takeover interaction using the shared unrestricted CLI command builder.",
+      "root_cause": "The Agent read the opaque context contents in its second turn. The run correctly failed and retained the old owner/ref, but those postconditions do not undo the trace disclosure.",
+      "current_defense": "Same prompt instruction and post-run trace verifier; the latter rejects a leaked token after it occurs.",
+      "coverage_gap": "No tool/runtime denial prevents this read in the legacy profile."
+    },
+    {
+      "record": "docs/claude-mcp-auth-failed-evidence.json",
+      "failure_category": "MCP read requests rejected; provider credentials file changed",
+      "profile": "First exclusive-MCP auth attempt.",
+      "root_cause": "The recorded failure was MCP request incompatibility and a provider credentials-file preservation guard failure; context was absent from captured output. This is a separate provider-state integrity event, not evidence of a secret value entering logs.",
+      "current_defense": "The MCP request metadata compatibility fix and current run's provider-settings/host snapshots; the retained third A35 record reports those guards unchanged.",
+      "coverage_gap": "Do not relabel this as a disclosure. It does show why the invocation-level provider-state guard must remain."
+    }
+  ],
+  "current_execution_surfaces": [
+    {
+      "surface": "Codex bootstrap smoke / advertised Codex fresh-bootstrap path",
+      "advertised_by": [
+        "README.md:55-59",
+        "docs/support-capability-matrix.md:18",
+        "docs/provider-bootstrap-evidence.md"
+      ],
+      "spawn_boundary": [
+        "scripts/provider_bootstrap_smoke.py::run lines 625-636"
+      ],
+      "construction": [
+        "codex_command lines 484-490 adds --add-dir private_root and --add-dir remote, and grants workspace-write"
+      ],
+      "assessment": "The current capability matrix still directs Codex evidence to provider_bootstrap_smoke.py. Because private_root is explicitly inside workspace-write, a task/tool call can read the session capability file; project files such as an untracked .env are also in the writable checkout. Existing model instructions and the trace verifier do not prevent this.",
+      "test_boundary": [
+        "tests/test_provider_bootstrap_smoke.py::test_context_token_in_jsonl_is_rejected detects a token only after it is in the captured JSONL"
+      ],
+      "status": "current supported path has a concrete capability-read exposure; no actual Codex disclosure is claimed"
+    },
+    {
+      "surface": "Legacy Claude bootstrap/auth/readiness/takeover CLI profile",
+      "advertised_by": [
+        "README.md:59",
+        "docs/claude-bootstrap-evidence.md reproduction instructions",
+        "docs/provider-bootstrap-evidence.md shared smoke invocation"
+      ],
+      "spawn_boundary": [
+        "scripts/provider_bootstrap_smoke.py::run lines 625-636",
+        "scripts/provider_auth_smoke.py::_run_turn lines 621-642",
+        "scripts/provider_readiness_smoke.py::_run_turn lines 465-476",
+        "scripts/provider_interaction_smoke.py::_run_turn lines 632-649"
+      ],
+      "construction": [
+        "Shared claude_command lines 492-498 enables Bash/Read/Edit/Write and --add-dir private_root; callers pass the reported context pathname and use the same builder."
+      ],
+      "assessment": "The A35 legacy Claude and A31 takeover disclosure records confirm this is exploitable. The later template guard does not remove native tools or deny filesystem reads. The support matrix now separately describes Claude's exclusive-MCP profile; the older profile must be explicitly marked historical/unsupported or technically constrained so docs do not advertise both as interchangeable supported paths.",
+      "status": "historical exploit proven; present support status is inconsistent across README, evidence reproductions, and the capability matrix"
+    },
+    {
+      "surface": "Exclusive Claude MCP profile",
+      "spawn_boundary": [
+        "scripts/provider_mcp_auth_smoke.py::run lines 302-310",
+        "scripts/provider_mcp_auth_smoke.py::capture_turn"
+      ],
+      "construction": [
+        "scripts/provider_mcp_profile.py::claude_mcp_command lines 136-144 exposes only read_file and agentctl; no Bash/Read/Edit/Write or private-root add-dir"
+      ],
+      "runtime_guard": [
+        "scripts/provider_tool_broker.py::Broker.read_file lines 313-338 exact canonical allowlist and Landlock reader",
+        "Broker.agentctl lines 340-369 validates approved phase and public result",
+        "_clean_env lines 237-243 replaces engine/reader environment"
+      ],
+      "evidence": [
+        "docs/provider-broker-engine-evidence.json: installed real agentctl denies private context and .env reads; model_turn_started=false",
+        "docs/claude-mcp-auth-evidence.json: one actual fresh Haiku turn, raw/decoded context-token scan passed, typed authentication-required result, no project mutation"
+      ],
+      "proves": "The MCP tool boundary denies unapproved filesystem reads and constrains engine calls; the one actual A35 turn did not disclose its opaque context token.",
+      "does_not_prove": "Successful secret-value read/output behavior, actual OAuth/2FA, real Doppler values/errors, or safety of the legacy native-tool profile. The actual A35 fixture used synthetic Doppler and only tested missing-auth diagnostics."
+    }
+  ],
+  "focused_coverage": {
+    "tests/test_secret_leak_matrix.py": [
+      "test_local_success_keeps_secret_out_of_public_result_git_and_diagnostics",
+      "test_corrupt_decision_invalid_patch_and_unexpected_exception_are_closed",
+      "test_doppler_private_failures_never_reach_cli_or_public_json",
+      "test_conflict_abort_and_stale_decision_leave_values_private",
+      "test_takeover_fences_suspended_secret_writer_without_disclosing_material",
+      "test_partial_unknown_and_terminal_resolution_never_replay_or_leak"
+    ],
+    "covers": "Six local/fake-provider methods inspect captured CLI stdout/stderr/traceback, public results, private journal diagnostic fields, and reachable Git history. The synthetic provider-error set includes malformed, oversized, restricted, wrong-destination and safe error outcomes; intentional private baseline/local material is correctly excluded from disclosure-channel checks.",
+    "does_not_cover": "A real provider error/value flowing through a native unrestricted Agent tool, or a technical denial of private context/.env reads on the supported Codex legacy launch path.",
+    "other_evidence": [
+      "tests/test_provider_bootstrap_smoke.py::test_context_token_in_jsonl_is_rejected is post-run detection, not prevention.",
+      "tests/test_provider_mcp_auth_smoke.py::test_raw_and_decoded_provider_outputs_are_scanned_before_normalization scans the context capability in raw/decoded MCP output; it does not inject a secret value into model-readable tools.",
+      "tests/test_provider_mcp_auth_smoke.py::test_evaluator_rejects_extra_tools_missing_owner_direct_doppler_and_extra_log_phases verifies the narrow registry and tool-call ordering.",
+      "tests/test_provider_tool_broker.py::test_real_landlock_read_only_approved_file_and_denied_private_paths and tests/test_landlock_tool_child.py::test_context_file_shell_symlink_and_listed_directory_do_not_grant_file_reads exercise real Linux file denial without invoking a model."
+    ]
+  },
+  "secondary_unverified_path": {
+    "source": "src/agent_handoff/git_backend.py::git_environment lines 56-63; provider launchers pass that environment at provider_bootstrap_smoke.py lines 621-636 and corresponding auth/readiness/interaction callers.",
+    "observation": "git_environment removes GIT_* variables but otherwise copies the caller environment. The launchers do not scrub general secret-bearing variables before starting the provider CLI.",
+    "classification": "unverified exposure risk",
+    "limit": "No retained trace proves the CLI exposes inherited variables to its Bash child or model; do not report an environment-value disclosure as an observed incident. A launch-boundary environment-scrub regression would resolve this precise uncertainty."
+  },
+  "highest_priority_action": {
+    "gap": "The still-advertised Codex unrestricted launch and legacy Claude command builder make private capability files readable to the Agent; one such read already produced a real trace disclosure.",
+    "implementation_direction": "At a shared provider spawn-policy boundary, fail closed for the unrestricted legacy profile: either route supported model tools through a restricted broker with no private-root grant, or withdraw that profile from the supported workflow until an OS-enforced read boundary exists. Keep existing failed traces retained.",
+    "focused_regression": "Using the actual supported launch/tool boundary, attempt reads of the opaque context file and an untracked .env; assert denial before bytes reach provider stdout/stderr/native trace. Also assert every bootstrap/auth/readiness/takeover caller uses the same guarded launch policy. A post-run verifier rejection alone is insufficient."
+  },
+  "current_review_update": {
+    "withdrawn_finding": "Legacy native-tool builders now reject before provider execution. Earlier current_execution_surfaces and highest_priority_action entries above describe the pre-mitigation review, not a current readable private-root grant.",
+    "supported_feature_evidence": "docs/feature-workflow-evidence.json records the approved three-tool Haiku feature turn, independently reverified with the current controller. Prior failed traces remain historical evidence.",
+    "model_bound_error_regression": "tests/test_provider_mcp_feature_smoke.py::test_secret_in_synthetic_doppler_error_stays_out_of_mcp_result_and_logs executes real local Git/engine/broker/Doppler-proxy code with an intentionally synthetic Doppler error sentinel. A separate execution marker proves the backend was reached; shared_read=unavailable and secrets_shared=false prove safe failure handling. Sentinel is absent from model-bound broker bytes, explicitly synthetic native events, engine/proxy logs, journal diagnostics and reachable public Git objects. Source/index/mainline and owner/ref remain preserved.",
+    "scope_limit": "No actual provider/model error turn or live Doppler write is asserted by this offline test; no new model API call occurred. No Cartesian provider/platform/fault matrix is an A54 requirement."
+  },
+  "review_conclusion": "The old unrestricted-launch blocker is resolved and withdrawn. The supported MCP model-bound backend-error boundary now has a sentinel integration regression, alongside the retained CLI/journal/Git error matrix and actual successful Haiku profile evidence. Keep this scoped offline proof distinct from actual provider error traces; full v1.2 remains incomplete because the authoritative Doppler writer contract and actual-provider write/fault cases are still missing."
+}

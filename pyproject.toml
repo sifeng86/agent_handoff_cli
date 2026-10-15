@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools==75.8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-handoff"
+version = "0.1.0"
+description = "Git authority, journaled handoff and scoped secret synchronization runtime"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["jsonschema>=4.10.3,<5"]
+
+[project.scripts]
+agentctl = "agent_handoff.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.data-files]
+"share/agent-handoff/schemas" = ["schemas/*.schema.json"]
+"share/agent-handoff/template" = ["template/AGENTS.md", "template/CLAUDE.md"]
+"share/agent-handoff/template/.agent" = ["template/.agent/*"]
+"share/agent-handoff/template/plans" = ["template/plans/*.md"]

@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "evidence_scope": "one fresh claude session on an isolated local Git authority",
+  "provider": "claude",
+  "model": "claude-haiku-5-5",
+  "provider_version": "2.1.296 (Claude Code)",
+  "agentctl_version": null,
+  "python_version": "3.12.3",
+  "git_version": "git version 2.55.0",
+  "provider_trace_sha256": "6b343e960691a29db85515f212947176385ceb2af7bd254f44e996a129a6bf09",
+  "template_instructions_sha256": "e5a632ad0f1fa1d6c470e91d895a32c799414389655e61a6ffcaa040b1fb6abf",
+  "base_revision": "0f97a6f0de68c0f7bc5675755b574414d36d1e36",
+  "initialized_revision": "522632f1ac6aad7074bfceb0468d3643e790ec90",
+  "resume_revision": "72bbb0bd3d9dca0a49c0549aa7ffce0c9370b15c",
+  "publication_ref": "refs/heads/agent-handoff-provider-smoke-763328cd53fa4ae08424643349f25dee",
+  "provider_exit_code": 0,
+  "wrapper_calls": 4,
+  "provider_config_and_auth_unchanged": true,
+  "provider_settings_guard_scope": "settings.json/.credentials.json",
+  "source_unchanged": true,
+  "managed_app_returns_42": true,
+  "no_feature_publication": true,
+  "instructions_read_before_inspect": true,
+  "agents_read_observed": true,
+  "inspect_before_resume": true,
+  "resume_ready_owned_before_feature_change": true,
+  "only_managed_app_change_event": true,
+  "owner_session_capability_proved": true,
+  "context_token_absent_from_provider_output": true,
+  "recorded_on": "2026-10-13",
+  "verification_method": "direct successful harness run; independent retained-fixture review",
+  "claude_entry_sha256": "5813236e65631db703069d390874d07929ada62fce073ca293c655528b7ffc25",
+  "harness_sha256": "530967585e027afce3f16fa3ebbd19ed479a5a1540b9605aa8b60b473d7e657d",
+  "source_index_bytes_unchanged": true,
+  "host_guard_limitations": [
+    "settings.json and .credentials.json only; .claude.json, cache, metadata and full host state not covered"
+  ],
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "passed": false,
+      "cause": "project setting source disabled; CLAUDE.md not loaded; source was modified"
+    },
+    {
+      "attempt": 2,
+      "passed": false,
+      "cause": "canonical instructions lacked explicit context create syntax; stopped before context/resume"
+    },
+    {
+      "attempt": 3,
+      "passed": true,
+      "cause": "project source enabled and canonical CLI syntax clarified"
+    }
+  ],
+  "installed_runtime_modules_matched": 37,
+  "full_suite": {
+    "passed": 244,
+    "seconds": 78.315,
+    "log_sha256": "c1c9eac9093bab5b942377c9d0608667dcce15d450bb4d4ffb6f5823b56c136f"
+  },
+  "focused_suite_passed": 28
+}

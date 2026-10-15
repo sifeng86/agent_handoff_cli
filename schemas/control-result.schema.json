@@ -1,0 +1,339 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Strict integrity/control decision public result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "command",
+    "status",
+    "operation_id",
+    "published_revision",
+    "code_publication",
+    "ownership",
+    "secrets_shared",
+    "decision",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "command": {
+      "enum": [
+        "decision",
+        "decision propose-integrity",
+        "decision apply"
+      ]
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "not_ready",
+        "decision_required",
+        "rejected",
+        "unknown",
+        "invalid",
+        "unsupported"
+      ]
+    },
+    "operation_id": {
+      "type": "null"
+    },
+    "published_revision": {
+      "type": "null"
+    },
+    "code_publication": {
+      "const": "not_attempted"
+    },
+    "ownership": {
+      "enum": [
+        "unknown",
+        "unowned"
+      ]
+    },
+    "secrets_shared": {
+      "type": "null"
+    },
+    "decision": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/integrity_decision"
+        }
+      ]
+    },
+    "next_action": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "preservation_handle": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "observed_revision": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "decision"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {
+            "not": {
+              "const": "completed"
+            }
+          },
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {}
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "decision propose-integrity"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {},
+          "next_action": {},
+          "preservation_handle": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "decision_required"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "preservation_handle"
+              ],
+              "properties": {
+                "decision": {
+                  "$ref": "#/$defs/integrity_decision"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "decision": {
+                  "type": "null"
+                },
+                "status": {
+                  "not": {
+                    "const": "completed"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "decision apply"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {
+            "type": "null"
+          },
+          "next_action": {},
+          "observed_revision": {}
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "integrity_decision": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Immutable decision envelope",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "decision_id",
+        "category",
+        "repository_identity",
+        "publication_ref",
+        "observed_head",
+        "observed_owner_session",
+        "destination_identity",
+        "reason",
+        "options",
+        "invalidated_by"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "category": {
+          "const": "publication_integrity"
+        },
+        "repository_identity": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "publication_ref": {
+          "type": "string",
+          "pattern": "^refs/heads/[^\\u0000-\\u001f\\u007f]+$"
+        },
+        "observed_head": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observed_owner_session": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "destination_identity": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "reason": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "option_id",
+              "effect"
+            ],
+            "properties": {
+              "option_id": {
+                "enum": [
+                  "adopt",
+                  "abort"
+                ]
+              },
+              "effect": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          },
+          "maxItems": 2,
+          "contains": {
+            "properties": {
+              "option_id": {
+                "const": "abort"
+              }
+            }
+          }
+        },
+        "invalidated_by": {
+          "const": [
+            "authority_head_change",
+            "owner_change",
+            "destination_change",
+            "relevant_secret_state_change"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "options": {
+                "contains": {
+                  "properties": {
+                    "option_id": {
+                      "const": "adopt"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "observed_head": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$comment": "Adopt/abort only; no restore/publication, writer capability or provider grants. Runtime validates option uniqueness and exact preserved-source/envelope linkage before execution."
+}

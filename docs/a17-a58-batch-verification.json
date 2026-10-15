@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "batch": "A17 terminal receipt + A58 installer repair",
+  "full_suite": {
+    "returncode": 1,
+    "tests": 311,
+    "seconds": 98.97,
+    "passed": false,
+    "failure_headings": 2,
+    "error_headings": 0,
+    "failed_test_methods": 1,
+    "failed_subtests": 2,
+    "passed_test_methods": 310
+  },
+  "full_suite_exit_zero": false,
+  "failure_cause": "Two assertions in the same legacy mock fixture used literal commit instead of a full matching Git OID; strict binding intentionally rejects it.",
+  "repair": "Updated mock receipt to the matching 40-hex OID and retained a wrong-identity negative case; no runtime change after full-suite run.",
+  "targeted_after_fixture_fix": {
+    "module": "test_foundation",
+    "tests": 11,
+    "seconds": 0.141,
+    "passed": true
+  },
+  "combined_scope_passed": true,
+  "focused_before_full": {
+    "installer_modules_tests": 13,
+    "backend_publication_tests": 22,
+    "primary_strengthened_A17_case_passed": true
+  },
+  "remaining_material_ids": [
+    "A35",
+    "A44",
+    "A46",
+    "A54"
+  ],
+  "complete_v1_2": false,
+  "package_verification": {
+    "wheel_and_sdist_installations_passed": true,
+    "installed_A58_SDK_passed": true,
+    "delivery_report": "dist/package-verification.json",
+    "runtime_modules_verified": 38,
+    "resource_assets_verified": 42,
+    "sdist_test_only_refresh": {
+      "installed_sdist_reinstalled": false,
+      "new_archive_diff_only_test_fixture": true,
+      "previously_installed_sdist_runtime_and_resources_unchanged": true,
+      "refreshed_only_tests_test_foundation_py": true,
+      "runtime_schema_template_archive_contents_unchanged": true,
+      "wheel_rebuilt": false,
+      "refreshed_archive_promoted_to_reported_dist_by_primary": true
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schema": "plan",
+  "record": {
+    "schema_version": 1,
+    "id": "P-001",
+    "status": "COMPLETE",
+    "goal": "Implement code",
+    "scope": "Code",
+    "non_goals": "Secrets",
+    "steps": [
+      "S-001"
+    ],
+    "acceptance_criteria": "Tests pass"
+  },
+  "valid": false
+}

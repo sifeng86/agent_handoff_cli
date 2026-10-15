@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-13T05:31:06.643911+00:00",
+  "platform": "Linux",
+  "architecture": "x86_64",
+  "os": {
+    "VERSION_ID": "24.04",
+    "ID": "ubuntu"
+  },
+  "kernel_release": "5.15.167.4-microsoft-standard-WSL2",
+  "wsl_verified": true,
+  "python_version": "3.12.3",
+  "git_version": "git version 2.55.0",
+  "suite": {
+    "command": "PYTHONPATH=src:tests python3 -m unittest discover -s tests -q",
+    "tests": 216,
+    "duration_seconds": 80.408,
+    "result": "passed",
+    "log_sha256": "4729bc7e33b83f22f4541f1f74fa796ceb6bbcfb114b2ac02dbbaa9244234a36"
+  },
+  "installed_smokes": [
+    {
+      "installation": "wheel",
+      "cli_lifecycle": [
+        "init",
+        "acquire",
+        "recover-session",
+        "release"
+      ],
+      "resource_count": 42,
+      "host_recovery": [
+        "backup",
+        "verify-backup",
+        "restore",
+        "resolve"
+      ],
+      "authority_transition": [
+        "propose",
+        "apply",
+        "source_acquire_fenced",
+        "target_init",
+        "target_acquire",
+        "target_release"
+      ]
+    },
+    {
+      "installation": "sdist",
+      "cli_lifecycle": [
+        "init",
+        "acquire",
+        "recover-session",
+        "release"
+      ],
+      "resource_count": 42,
+      "host_recovery": [
+        "backup",
+        "verify-backup",
+        "restore",
+        "resolve"
+      ],
+      "authority_transition": [
+        "propose",
+        "apply",
+        "source_acquire_fenced",
+        "target_init",
+        "target_acquire",
+        "target_release"
+      ]
+    }
+  ],
+  "scope": "Current Ubuntu WSL process environment, unit/integration suite and fresh installed wheel/sdist flows; not a new Windows host installation or fresh AI provider session."
+}

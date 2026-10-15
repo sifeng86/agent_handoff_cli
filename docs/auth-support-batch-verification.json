@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "batch": "A35 scoped fresh auth and Git unsupported/executor boundaries",
+  "full_suite": {
+    "tests": 381,
+    "seconds": 113.293,
+    "passed": true,
+    "entrypoint": "PYTHONPATH=src:tests python3 -m unittest discover -s tests -q",
+    "private_log": "/tmp/agent-handoff-v12-auth-support-full-corrected.log",
+    "log_sha256": "8cf642cd7efde03b362caa6010095290734401ef49426991d283bb8ec7608996",
+    "initial_run": {
+      "tests": 381,
+      "passed": 380,
+      "failed": 1,
+      "cause": "Fixture mkdir mode masked by umask077; explicit chmod0755 fix. Original failure log retained.",
+      "private_log": "/tmp/agent-handoff-v12-auth-support-full.log"
+    }
+  },
+  "a35_evidence": "docs/claude-mcp-auth-evidence.json",
+  "a35_status": "proven_agent_interaction",
+  "additional_api_calls_during_offline_reassessment": 0,
+  "single_turn_authorizations_consumed_total": 3,
+  "automatic_api_retry": false,
+  "git_boundaries": {
+    "tests": 6,
+    "module": "tests/test_git_unsupported_boundaries.py",
+    "scope": "actual local Git; SHA256/Gitlink/root and nested LFS fail closed, pre-push disabled for backend publication, fsmonitor disabled for source preservation"
+  },
+  "canonical_model_guard": "tests/test_provider_mcp_profile.py::test_optional_canonical_usage_identity_must_match_requested_model",
+  "package_report": "dist/package-verification.json",
+  "archives_match_current_runtime_resources_scripts_tests": true,
+  "previous_delivery_preserved": "dist/previous-auth-support",
+  "complete_v1_2": false,
+  "remaining_material_ids": [
+    "A44",
+    "A46",
+    "A54"
+  ],
+  "scope_limits": [
+    "Synthetic Doppler auth diagnostic, no actual OAuth/2FA or real secret write.",
+    "Latest MCP profile does not add a first feature-mutation proof.",
+    "Selected Linux host categories preserved; services/users-security unverifiable.",
+    "Previous failed provider traces remain retained."
+  ]
+}

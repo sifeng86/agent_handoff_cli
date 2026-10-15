@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-10-13",
+  "client_timezone": "Asia/Taipei",
+  "recorded_at_utc": "2026-10-13T06:50:56.052632+00:00",
+  "requirement": "A59 / Design 25.4",
+  "scope": "One actual fresh Codex exec session with installed agentctl on Ubuntu WSL and an isolated local bare Git authority.",
+  "review_method": "Retained actual session independently revalidated after correcting overly restrictive harness checks; original harness reported a false negative for owned post-resume verification work.",
+  "review": {
+    "passed": true,
+    "reviewed_retained_session": true,
+    "model": "gpt-6-luna",
+    "provider_version": "codex-cli 0.162.0-alpha.17.2",
+    "flags": {
+      "instructions_read_before_inspect": true,
+      "agents_read_observed": true,
+      "inspect_before_resume": true,
+      "resume_ready_owned_before_feature_change": true,
+      "only_managed_app_change_event": true,
+      "source_unchanged": true,
+      "managed_app_returns_42": true,
+      "no_feature_publication": true,
+      "mainline_unchanged": true,
+      "verified_python_cache_present": false
+    },
+    "resume_revision": "6681d23faf5129837ec5b8d1375091c8a15ea28c",
+    "provider_trace_sha256": "59cd20efe54472669c5dd7ed039cf05d4102590f4aee72a608fc246aa4088d63",
+    "provider_config_bytes_restored": true,
+    "provider_exit_code": 0,
+    "context_token_absent_from_provider_output": true
+  },
+  "execution_wrapper_sha256": "5aa6c951d83c1d958fb6da54939770a7a2be0cfd96182268cb33f1c722ecec9b",
+  "verification_harness_sha256": "f7e995f16c30182267f6f20f0146007b7fe3e2339a30ea51520f4ba7ea4ea7de",
+  "template_bootstrap_sha256": "520d9c587c08dd55fcd29b7b52ea0345ab687cbeeb56e14d8881466060de92a4",
+  "runtime_source_sha256": "6958c93bbd51e04e5350f8d33f7f171cbaa29a1c2aaac9d0a35db0764f3af5f2",
+  "wrapper_phases": [
+    {
+      "command": "help",
+      "status": "help",
+      "exit_code": 0
+    },
+    {
+      "command": "status",
+      "status": "completed",
+      "exit_code": 0
+    },
+    {
+      "command": "inspect",
+      "status": "completed",
+      "exit_code": 0
+    },
+    {
+      "command": "help",
+      "status": "help",
+      "exit_code": 0
+    },
+    {
+      "command": "help",
+      "status": "help",
+      "exit_code": 0
+    },
+    {
+      "command": "context create",
+      "status": "completed",
+      "exit_code": 0
+    },
+    {
+      "command": "resume",
+      "status": "ready",
+      "exit_code": 0
+    },
+    {
+      "command": "help",
+      "status": "help",
+      "exit_code": 0
+    }
+  ],
+  "suite": {
+    "tests": 241,
+    "seconds": 77.638,
+    "result": "passed"
+  },
+  "host_scope": "Codex config/auth byte checks cover the recorded invocation; only fixture trust entries were reverted. This does not prove all host configuration, inode/ctime preservation or destructive host recovery.",
+  "limitations": [
+    "Claude and other provider sessions are not verified by this record.",
+    "The recorded session did not retain its original source index byte digest; clean source HEAD/worktree and capability proof were independently verified. Future harness runs retain the original index digest.",
+    "The complete secret-leak matrix, Doppler strong fencing, A01-A63 audit and broader host/fault gates remain incomplete."
+  ]
+}

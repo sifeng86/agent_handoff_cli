@@ -1,0 +1,5 @@
+recursive-include schemas *.schema.json
+recursive-include template *.md *.json *.yaml
+recursive-include tests *.py *.json
+recursive-include scripts *.py
+recursive-include docs *.md *.json

@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Private readonly host preservation observations",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "handle_id",
+    "observations"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "handle_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "observations": {
+      "type": "object",
+      "propertyNames": {
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "type": "object",
+        "propertyNames": {
+          "pattern": "^/"
+        },
+        "additionalProperties": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "status"
+              ],
+              "properties": {
+                "status": {
+                  "enum": [
+                    "absent",
+                    "unverifiable"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "status",
+                "tree"
+              ],
+              "properties": {
+                "status": {
+                  "const": "observed"
+                },
+                "tree": {
+                  "$ref": "#/$defs/tree"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "tree": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "value"
+      ],
+      "properties": {
+        "metadata": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "prefixItems": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "items": false
+        },
+        "value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/tree"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "$comment": "Runtime verifies metadata file type vs recursive value, bounded tree, filename identity and unchanged explicit inspection scope. Symlink targets and live service/Windows host state are outside this evidence."
+}

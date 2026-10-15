@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "title": "Private durable authority selection transition",
+  "required": [
+    "schema_version",
+    "transition_id",
+    "decision_id",
+    "before",
+    "after",
+    "phase",
+    "outcome"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "transition_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "before": {
+      "$ref": "authority-selection.schema.json"
+    },
+    "after": {
+      "$ref": "authority-selection.schema.json"
+    },
+    "phase": {
+      "enum": [
+        "prepared",
+        "resolved"
+      ]
+    },
+    "outcome": {
+      "enum": [
+        null,
+        "selected",
+        "not_selected"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "phase": {
+            "const": "prepared"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "outcome": {
+            "enum": [
+              "selected",
+              "not_selected"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "$comment": "Runtime additionally validates caller linkage, distinct authority identities, after.transition_id equal to transition_id, exact commit point and linked decision before terminal resolution."
+}

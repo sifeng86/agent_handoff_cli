@@ -1,0 +1,18 @@
+{
+  "schema": "session-candidate",
+  "valid": true,
+  "record": {
+    "schema_version": 1,
+    "protocol_version": "1.2",
+    "repository_identity": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "publication_ref": "refs/heads/publication",
+    "session_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "acquisition_operation_id": "cccccccccccccccccccccccccccccccc",
+    "acquisition_oid": null,
+    "checkout_identity": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "context_identity": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "machine_label": "local",
+    "provider_label": "agent",
+    "revoked": false
+  }
+}

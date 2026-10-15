@@ -1,0 +1,22 @@
+{
+  "acceptance_id": "A35",
+  "actual_cli_fixture_validated": true,
+  "version_command_succeeded": true,
+  "observation": {
+    "command": "secrets_get",
+    "returncode": 1,
+    "no_credentials_classified": true,
+    "request_scope": [
+      "DOPPLER_CONFIG",
+      "DOPPLER_PROJECT",
+      "RUNTIME_TEST"
+    ],
+    "environment_credentials_removed": true,
+    "no_remote_write": true
+  },
+  "existing_doppler_configuration_unchanged": true,
+  "focused_tests": 7,
+  "focused_passed": true,
+  "agent_ux_verified": false,
+  "scope": "Real isolated unauthenticated Doppler CLI readonly fixture only; no OAuth/2FA flow or fresh Agent UX claim."
+}

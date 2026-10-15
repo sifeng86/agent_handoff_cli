@@ -1,0 +1,518 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Strict public host command result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "command",
+    "status",
+    "operation_id",
+    "published_revision",
+    "code_publication",
+    "ownership",
+    "secrets_shared",
+    "decision",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "command": {
+      "enum": [
+        "host",
+        "host inspect",
+        "host verify",
+        "host backup",
+        "host verify-backup",
+        "host restore",
+        "host resolve"
+      ]
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "not_ready",
+        "decision_required",
+        "rejected",
+        "unknown",
+        "invalid",
+        "unsupported"
+      ]
+    },
+    "operation_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "published_revision": {
+      "type": "null"
+    },
+    "code_publication": {
+      "const": "not_attempted"
+    },
+    "ownership": {
+      "const": "unknown"
+    },
+    "secrets_shared": {
+      "type": "null"
+    },
+    "decision": {
+      "type": "null"
+    },
+    "next_action": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "preservation_handle": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "backup_handle": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "backup_verified": {
+      "const": true
+    },
+    "host_changes_attempted": {
+      "const": false
+    },
+    "scope": {
+      "const": "selected_linux_configuration_entries"
+    },
+    "recovery_outcome": {
+      "enum": [
+        "restored",
+        "not_restored"
+      ]
+    },
+    "inspected_categories": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "ssh",
+          "git",
+          "provider",
+          "shell",
+          "network",
+          "vpn",
+          "firewall",
+          "users_security",
+          "package_sources",
+          "services"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "unverifiable_categories": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "ssh",
+          "git",
+          "provider",
+          "shell",
+          "network",
+          "vpn",
+          "firewall",
+          "users_security",
+          "package_sources",
+          "services"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "preserved_categories": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "ssh",
+          "git",
+          "provider",
+          "shell",
+          "network",
+          "vpn",
+          "firewall",
+          "users_security",
+          "package_sources",
+          "services"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "changed_categories": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "ssh",
+          "git",
+          "provider",
+          "shell",
+          "network",
+          "vpn",
+          "firewall",
+          "users_security",
+          "package_sources",
+          "services"
+        ]
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "host"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {
+            "type": "null"
+          },
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {},
+          "next_action": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "status": {
+                  "not": {
+                    "const": "completed"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "host inspect"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {
+            "type": "null"
+          },
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {},
+          "next_action": {},
+          "preservation_handle": {},
+          "inspected_categories": {},
+          "unverifiable_categories": {},
+          "host_changes_attempted": {},
+          "scope": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "preservation_handle",
+                "inspected_categories",
+                "unverifiable_categories",
+                "host_changes_attempted",
+                "scope"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "host verify"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {
+            "type": "null"
+          },
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {},
+          "next_action": {},
+          "preservation_handle": {},
+          "preserved_categories": {},
+          "changed_categories": {},
+          "unverifiable_categories": {},
+          "host_changes_attempted": {},
+          "scope": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "preservation_handle",
+                "preserved_categories",
+                "changed_categories",
+                "unverifiable_categories",
+                "host_changes_attempted",
+                "scope"
+              ],
+              "properties": {
+                "changed_categories": {
+                  "maxItems": 0
+                },
+                "unverifiable_categories": {
+                  "maxItems": 0
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "host backup"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {
+            "type": "null"
+          },
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {},
+          "next_action": {},
+          "backup_handle": {},
+          "backup_verified": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "backup_handle",
+                "backup_verified"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "host verify-backup"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {
+            "type": "null"
+          },
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {},
+          "next_action": {},
+          "backup_handle": {},
+          "backup_verified": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "backup_handle",
+                "backup_verified"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "host restore"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {},
+          "next_action": {},
+          "backup_handle": {},
+          "recovery_outcome": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "backup_handle",
+                "recovery_outcome"
+              ],
+              "properties": {
+                "operation_id": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{32}$"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "host resolve"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "schema_version": {},
+          "command": {},
+          "status": {},
+          "operation_id": {},
+          "published_revision": {},
+          "code_publication": {},
+          "ownership": {},
+          "secrets_shared": {},
+          "decision": {},
+          "next_action": {},
+          "backup_handle": {},
+          "recovery_outcome": {}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "backup_handle",
+                "recovery_outcome"
+              ],
+              "properties": {
+                "operation_id": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{32}$"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "$comment": "Host categories and handles only; no paths/material/digests or publication/ownership/shared-secret claims. Runtime additionally checks category containment and preserved/changed/unverifiable cross-list consistency."
+}

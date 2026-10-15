@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Private Git operation journal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "operation_id",
+    "operation_type",
+    "repository_identity",
+    "publication_ref",
+    "expected_oid",
+    "prepared_commit_oid",
+    "payload_identity",
+    "session_id",
+    "created_at",
+    "phase",
+    "result",
+    "candidate",
+    "decision_id"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "operation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "operation_type": {
+      "enum": [
+        "init",
+        "acquire",
+        "takeover",
+        "checkpoint",
+        "handoff",
+        "done",
+        "release"
+      ]
+    },
+    "repository_identity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "publication_ref": {
+      "type": "string",
+      "pattern": "^refs/heads/[^\\u0000-\\u001f\\u007f]+$"
+    },
+    "expected_oid": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "prepared_commit_oid": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "payload_identity": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "session_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "phase": {
+      "enum": [
+        "prepared",
+        "sending",
+        "verifying",
+        "resolved"
+      ]
+    },
+    "result": {
+      "enum": [
+        "local_only",
+        "published",
+        "rejected",
+        "publication_unknown"
+      ]
+    },
+    "candidate": {
+      "anyOf": [
+        {
+          "$ref": "session-candidate.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "decision_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "phase": {
+            "const": "resolved"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "enum": [
+              "local_only",
+              "published",
+              "rejected"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation_type": {
+            "enum": [
+              "acquire",
+              "takeover"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "candidate": {
+            "allOf": [
+              {
+                "$ref": "session-candidate.schema.json"
+              },
+              {
+                "properties": {
+                  "revoked": {
+                    "const": false
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "candidate": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation_type": {
+            "const": "init"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "expected_oid": {
+            "type": "null"
+          },
+          "session_id": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "expected_oid": {
+            "type": "string",
+            "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+          },
+          "session_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$"
+          }
+        }
+      }
+    }
+  ]
+}

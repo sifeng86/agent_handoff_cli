@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Authority configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "authority",
+    "publication_ref",
+    "mainline_ref",
+    "plan_directory"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "authority": {
+      "type": "string",
+      "minLength": 1
+    },
+    "publication_ref": {
+      "type": "string",
+      "pattern": "^refs/heads/[^\\u0000-\\u001f\\u007f]+$"
+    },
+    "mainline_ref": {
+      "type": "string",
+      "pattern": "^refs/heads/[^\\u0000-\\u001f\\u007f]+$"
+    },
+    "plan_directory": {
+      "const": "plans"
+    }
+  }
+}

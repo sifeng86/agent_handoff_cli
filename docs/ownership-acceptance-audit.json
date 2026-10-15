@@ -1,0 +1,373 @@
+{
+  "schema_version": 1,
+  "design_section": "Design v1.2 \u00a720.1 Ownership / CAS",
+  "audited_sources": [
+    "tests/test_publication.py",
+    "tests/test_faults.py",
+    "docs/hosting-runtime-evidence.md",
+    "docs/hosting-cas-evidence.md",
+    "docs/hosting-plan-evidence.md",
+    "docs/wsl-smoke-evidence.json",
+    "docs/ownership-closure-evidence.json"
+  ],
+  "scope": {
+    "fixture": "pytest-free unittest scenarios using local bare Git remotes and isolated source/private state",
+    "hosting": "Executed isolated GitHub SSH refs with explicit base and unchanged mainline",
+    "environment": "Ubuntu 24.04 under Microsoft WSL2; current WSL smoke record",
+    "not_claimed": [
+      "Every A01-A10 case ran on hosting",
+      "Every A01-A10 case ran on an independent Windows host",
+      "In-flight old-writer transport races for A07/A08",
+      "A live-host runtime retry race for A10"
+    ]
+  },
+  "classification_legend": {
+    "proven_local": "Requirement-level assertions pass in local bare-Git/runtime tests; no live hosting claim needed or established.",
+    "proven_hosting": "Requirement-level behavior is also present in an executed hosting run.",
+    "incomplete": "A material requirement assertion is missing or the test accepts an unrelated failure.",
+    "unverified": "No applicable executed evidence was found.",
+    "contradicted": "Executed evidence violates the requirement."
+  },
+  "acceptance": [
+    {
+      "id": "A01",
+      "requirement": "With owner null, one acquire creates a new session and acquisition commit.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_A01_A04_A09_acquire_recover_release",
+          "file": "tests/test_publication.py",
+          "assertions": [
+            "acquire ownership is owned"
+          ],
+          "limits": [
+            "Does not inspect acquisition parent or owner/session records; local fixture is an initialized local bare remote."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-plan-evidence.md",
+          "assertions": [
+            "single acquisition commit has exact initialization parent",
+            "session proof succeeds",
+            "published owner identity matches proved session"
+          ],
+          "scope": "Executed isolated hosting ref; explicit mainline remains unchanged."
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A02",
+      "requirement": "Two clones concurrently acquiring from the same HEAD result in at most one successful publication and one CAS rejection.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_direct_two_prepared_cas_writers",
+          "file": "tests/test_publication.py",
+          "assertions": [
+            "two commits prepared against same expected OID",
+            "first push published",
+            "second push rejected",
+            "remote remains at winner"
+          ],
+          "limits": [
+            "Backend CAS only; no runtime acquire/session behavior or separate clone assertion."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-runtime-evidence.md",
+          "assertions": [
+            "two independent checkouts/processes wait after preparation",
+            "outcomes exactly published/rejected",
+            "winner acquisition has exact initial parent"
+          ],
+          "scope": "Executed hosting runtime race; mainline unchanged."
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A03",
+      "requirement": "Direct acquire with a different remote owner does not publish and enters takeover decision flow.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_A03_A06_A08_takeover_fences_previous_release",
+          "file": "tests/test_publication.py",
+          "assertions": [
+            "status is decision_required",
+            "decision category is takeover",
+            "Remote HEAD unchanged after takeover proposal"
+          ],
+          "limits": []
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-plan-evidence.md",
+          "assertions": [
+            "writer B observes A's exact revision",
+            "takeover proposal is returned",
+            "applied takeover commit's exact parent is A's revision"
+          ],
+          "scope": "Executed sequential hosting takeover."
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A04",
+      "requirement": "A valid local session capability recovers the same remote owner without creating a new owner identity.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_A01_A04_A09_acquire_recover_release",
+          "file": "tests/test_publication.py",
+          "assertions": [
+            "capture remote HEAD",
+            "recover returns owned",
+            "remote HEAD unchanged"
+          ],
+          "limits": [
+            "Does not separately serialize/compare session IDs before and after recovery."
+          ]
+        },
+        {
+          "function": "test_A16_process_crash_after_server_accept_resolves_after_restart",
+          "file": "tests/test_faults.py",
+          "assertions": [
+            "resolve accepted acquisition",
+            "restart recover returns owned",
+            "remote HEAD unchanged"
+          ],
+          "limits": [
+            "Crash/recovery assertion is local bare Git."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-runtime-evidence.md",
+          "assertions": [
+            "winning writer's persisted capability recovers against same remote session",
+            "subsequent release tree diff contains only owner record"
+          ],
+          "scope": "Executed hosting run; report does not separately record before/after session IDs."
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A05",
+      "requirement": "A remote owner identifier without local capability cannot authorize self-recovery.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "file": "tests/test_publication.py",
+          "function": "test_A05_remote_id_without_local_capability_cannot_recover",
+          "assertions": [
+            "Fresh store recover rejected/code4 with unchanged ref/owner",
+            "Original caller retains same session binding while its capability record is deleted",
+            "Original recover rejected/code4 and source HEAD/index/status/bytes plus remote ref/owner unchanged",
+            "Original acquire creates takeover decision without publication; explicit takeover creates a different proved session and exact-parent commit"
+          ],
+          "limits": [
+            "Local bare-Git fixture; no live hosting claim for capability loss."
+          ]
+        }
+      ],
+      "live_evidence": [],
+      "gaps": []
+    },
+    {
+      "id": "A06",
+      "requirement": "A valid takeover decision against unchanged HEAD/owner creates a new session through CAS.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_A03_A06_A08_takeover_fences_previous_release",
+          "file": "tests/test_publication.py",
+          "assertions": [
+            "Takeover proposal does not change remote HEAD",
+            "Applied takeover returns owned and publishes exactly one commit parented by prior HEAD",
+            "New proved session ID differs from old owner session ID",
+            "Published owner session/acquisition IDs match new private capability"
+          ],
+          "limits": []
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/ownership-closure-evidence.json",
+          "assertions": [
+            "takeover_new_session is true after explicit session-ID inequality check",
+            "takeover commit parent is writer A exact prior HEAD",
+            "writer B owner/session capability proves",
+            "mainline unchanged and isolated branch absence independently confirmed"
+          ],
+          "scope": "Actual sequential GitHub SSH takeover; no in-flight race claim."
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A07",
+      "requirement": "Old session checkpoint after takeover is rejected/fenced.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_A07_old_owner_checkpoint_after_takeover_cannot_publish",
+          "file": "tests/test_publication.py",
+          "assertions": [
+            "failure code 4",
+            "remote HEAD unchanged",
+            "old writer's index and file edit retained"
+          ],
+          "limits": [
+            "Local bare remote; sequential takeover."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-plan-evidence.md",
+          "assertions": [
+            "old writer checkpoint returns fenced code",
+            "remote HEAD, source HEAD/index/edit unchanged"
+          ],
+          "scope": "Executed sequential hosting takeover."
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A08",
+      "requirement": "Old session release after takeover cannot clear the new owner.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_A03_A06_A08_takeover_fences_previous_release",
+          "file": "tests/test_publication.py",
+          "assertions": [
+            "old release fails with code 4",
+            "remote HEAD remains at post-takeover revision"
+          ],
+          "limits": [
+            "Local bare remote; sequential takeover."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-plan-evidence.md",
+          "assertions": [
+            "old writer release is fenced",
+            "remote revision does not change"
+          ],
+          "scope": "Executed sequential hosting takeover."
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A09",
+      "requirement": "Owner release clears owner in a control-only publication without changing Plan completion/state.",
+      "classification": "proven_hosting",
+      "tests": [
+        {
+          "function": "test_A01_A04_A09_acquire_recover_release",
+          "file": "tests/test_publication.py",
+          "assertions": [
+            "release returns released",
+            "state bytes unchanged",
+            "source checkout status unchanged"
+          ],
+          "limits": [
+            "Local fixture state is idle and does not assert a tree diff limited to owner record."
+          ]
+        },
+        {
+          "function": "test_A39_release_preserves_working_plan_and_cursor",
+          "file": "tests/test_snapshots.py",
+          "assertions": [
+            "working Plan and cursor survive owner release"
+          ],
+          "limits": [
+            "Local bare-Git runtime scenario."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-runtime-evidence.md",
+          "assertions": [
+            "acquisition-to-release tree diff only owner.json"
+          ],
+          "scope": "Executed hosting release with idle state."
+        },
+        {
+          "record": "docs/hosting-plan-evidence.md",
+          "assertions": [
+            "owner becomes null while exact Plan bytes and working cursor/summary remain unchanged"
+          ],
+          "scope": "Executed hosting release with READY working Plan."
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "id": "A10",
+      "requirement": "When concurrent mutation changes HEAD, an old operation does not replace its expected OID and resend automatically.",
+      "classification": "proven_local",
+      "tests": [
+        {
+          "function": "test_A18_unknown_send_with_advanced_head_never_overwrites_competing_revision",
+          "file": "tests/test_publication.py",
+          "assertions": [
+            "competitor advances remote during single push",
+            "send call count is one",
+            "result remains publication_unknown",
+            "competitor commit and exact parent remain",
+            "old local edit retained"
+          ],
+          "limits": [
+            "Fault-injected single-process runtime test against a local bare remote."
+          ]
+        },
+        {
+          "function": "test_direct_two_prepared_cas_writers",
+          "file": "tests/test_publication.py",
+          "assertions": [
+            "same expected OID accepts one prepared commit and rejects the other"
+          ],
+          "limits": [
+            "Backend CAS only."
+          ]
+        }
+      ],
+      "live_evidence": [
+        {
+          "record": "docs/hosting-cas-evidence.md",
+          "assertions": [
+            "two independent backend writers send against same expected OID; one publishes and one rejects"
+          ],
+          "limits": [
+            "Does not execute a runtime operation or assert runtime retry count."
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  ],
+  "material_gaps": [],
+  "latest_local_verification": {
+    "focused_tests": 18,
+    "full_suite_tests": 244,
+    "full_suite_seconds": 78.745,
+    "result": "passed"
+  }
+}

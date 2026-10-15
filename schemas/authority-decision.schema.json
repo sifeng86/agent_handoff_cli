@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "title": "Private reviewed two-authority transition evidence",
+  "required": [
+    "schema_version",
+    "decision_id",
+    "source_identity",
+    "target_identity",
+    "target_destination",
+    "target_publication_ref",
+    "source",
+    "target",
+    "preservation_handle"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "source_identity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "target_identity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "target_destination": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_publication_ref": {
+      "type": "string",
+      "pattern": "^refs/heads/.+"
+    },
+    "source": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/observation"
+        },
+        {
+          "properties": {
+            "head": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "target": {
+      "$ref": "#/$defs/observation"
+    },
+    "preservation_handle": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    }
+  },
+  "$defs": {
+    "observation": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "additionalProperties": false,
+      "title": "Exact reviewed authority observation",
+      "required": [
+        "head",
+        "owner",
+        "dependency_digest"
+      ],
+      "properties": {
+        "head": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "owner": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "dependency_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "head": {
+                "type": "null"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "owner": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$comment": "Runtime validates approved destination/ref, computed identities, public option text, filename, caller and preservation linkage, and stale observations. These cross-record relationships are not proven by this schema alone."
+}

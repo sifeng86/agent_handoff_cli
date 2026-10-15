@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Protocol record (foundation subset)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "protocol_version", "required_features"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "protocol_version": {"type": "string", "const": "1.2"},
+    "required_features": {"type": "array", "maxItems": 0},
+    "extensions": {"type": "object"}
+  }
+}

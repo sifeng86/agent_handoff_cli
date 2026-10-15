@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Leading Markdown Plan metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "status",
+    "goal",
+    "scope",
+    "non_goals",
+    "steps",
+    "acceptance_criteria"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+    },
+    "status": {
+      "enum": [
+        "DRAFT",
+        "READY",
+        "DONE"
+      ]
+    },
+    "goal": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "scope": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "non_goals": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "steps": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+      }
+    },
+    "acceptance_criteria": {
+      "type": "string",
+      "pattern": "\\S"
+    }
+  }
+}
