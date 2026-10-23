@@ -66,6 +66,24 @@ class HostRecoveryCLITests(unittest.TestCase):
         self.assertEqual(self.invoke("restore", "--backup-handle", handle, "--expected-handle", handle)[0], 3)
         self.assertEqual(self.config.read_bytes(), b"latest-editor")
 
+    def test_noncompleted_host_results_propagate_exit_code(self):
+        handle = "a" * 32
+        cases = [
+            ("agent_handoff.host_recovery.HostFileRecovery.restore",
+             {"status": "unknown", "operation_id": "b" * 32, "backup_handle": handle},
+             ("restore", "--backup-handle", handle, "--expected-handle", "c" * 32), 5),
+            ("agent_handoff.host_guard.HostGuard.verify",
+             {"status": "not_ready", "preservation_handle": handle, "preserved_categories": [],
+              "changed_categories": ["ssh"], "unverifiable_categories": [],
+              "host_changes_attempted": False, "scope": "selected_linux_configuration_entries"},
+             ("verify", "--preservation-handle", handle), 6),
+        ]
+        for target, report, args, expected in cases:
+            with self.subTest(action=args[0]), patch(target, return_value=report):
+                code, public = self.invoke(*args)
+                self.assertEqual(code, expected)
+                self.assertEqual(public["status"], report["status"])
+
     def test_process_exit_before_replace_resolves_without_replay(self):
         self._crash("after_host_recovery_journal", "not_restored")
 

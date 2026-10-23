@@ -1,6 +1,16 @@
 # Agent Handoff Runtime
 
-依據 [Implementation Specification](docs/spec.md) 與 [Design v1.2](docs/agent-handoff-runtime-solution-design-v1.2.md) 實作。已提供 local Git backend 的 init、acquire、recover-session、decision-based takeover、checkpoint、handoff、release、done、operation resolve 與隔離 checkout resume。Private state 與 source checkout 分開，publication 使用固定 expected OID 的 CAS 與 durable journal。使用者批准的基本同步版已完成驗收：444 項測試、隔離 Doppler 實測與 wheel／sdist 安裝通過。範圍見 [completion audit](docs/design-v1.2-completion-audit.md)。
+**一般使用者只需要向 Agent 說明任務，不需要操作 CLI。** 安裝、設定、接手、保存進度與復原由 Agent 負責。請看 [簡明使用者指南](docs/user-guide.zh-TW.md)；以下技術參考與 [操作手冊](docs/agent-operations.zh-TW.md) 提供給 Agent／維護者。
+
+## 從 GitHub 第一次使用
+
+開啟能操作本機專案的 Coding Agent，提供工具連結與目標專案位置，由 Agent 負責下載、安裝與導入。
+
+**導入用語與完整範本統一以 [使用者指南](docs/user-guide.zh-TW.md) 為準**，涵蓋全新專案、進行中的專案，以及 `hahaha`（`~/workspace/hahaha`）的完整範例。首次只完成導入與驗證，停下來回報；開始開發由使用者另行交代。
+
+工具本體與產品專案分開放置。以下為 Agent／維護者的技術參考。
+
+依據 [Implementation Specification](docs/spec.md) 與 [Design v1.2](docs/agent-handoff-runtime-solution-design-v1.2.md) 實作。已提供 local Git backend 的 init、acquire、recover-session、decision-based takeover、checkpoint、handoff、release、done、operation resolve 與隔離 checkout resume。Private state 與 source checkout 分開，publication 使用固定 expected OID 的 CAS 與 durable journal。使用者批准的基本同步版已完成驗收；本輪全面檢查修正 4 項程式／文件問題，446 項測試與 wheel／sdist 安裝通過，Agent 操作流程也已實跑。既有隔離 Doppler 實測紀錄保留。範圍見 [completion audit](docs/design-v1.2-completion-audit.md)。
 
 ## 環境設定
 
@@ -81,6 +91,6 @@ python3 scripts/installer_repair.py --prefix /absolute/prefix --known-good-handl
 
 修復會先驗證並回報目前 broken launcher 的 backup，再替換單一 launcher。Body、owner、mode 不符就拒絕；結果若為 `unknown`，保留 operation ID 並使用 `host resolve` 查核，勿重送修復。這個 source script 尚未包含於目前交付 wheel。
 
-Latest verification: [basic release](docs/basic-release-verification.json) — 444 tests passed, real isolated Doppler acceptance and wheel/sdist installations verified. Download the wheel/source archive from `dist/`; final hashes are in `dist/package-verification.json`.
+Latest verification: [comprehensive review](docs/comprehensive-review-2026-10-15.md) — 446 tests passed, wheel/sdist installation smokes and both installed tutorial walkthroughs passed. Earlier real Doppler evidence remains in [basic release](docs/basic-release-verification.json). Download the wheel/source archive from `dist/`; final hashes are in `dist/package-verification.json`.
 
 Python packaging metadata `>=3.12` is an installation floor, not a tested-version promise. Python 3.12 on Ubuntu/WSL is verified; later Python minors remain unverified. Legacy unrestricted Codex/Claude provider smoke commands fail closed with `legacy_provider_profile_not_isolated`. Historical bootstrap evidence is retained. The exclusive-MCP auth diagnostic and the verified three-tool Claude feature workflow are the current reviewed paths.

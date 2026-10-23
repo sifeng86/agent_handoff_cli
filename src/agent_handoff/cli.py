@@ -87,6 +87,8 @@ def main(argv=None) -> int:
         if args.command == "decision" and args.action == "propose-integrity":
             expected_family = "decision-proposal"
         value["command"] = args.command
+        if args.action is not None and args.command not in {"context", "host", "authority", "secrets", "decision", "operation"}:
+            raise RuntimeFailure("This command does not accept a positional action; see agentctl --help.")
         if sys.platform != "linux":
             raise RuntimeFailure("Only Linux/WSL runtime is supported.", "unsupported", 8)
         if args.command == "recover-ownership":
@@ -233,7 +235,7 @@ def main(argv=None) -> int:
                     if args.action != "resolve" or args.operation_id is None:
                         raise RuntimeFailure("Use operation resolve with an explicit operation ID.")
                     value = runtime.resolve(args.operation_id)
-            code = exit_code(value)
+        code = exit_code(value)
     except PublicResultFailure as failure:
         if expected_family in ("git", "resume"):
             value = result("operation", status="invalid", code_publication="publication_unknown", ownership="ownership_pending",

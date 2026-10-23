@@ -167,5 +167,13 @@
     ]
   },
   "decision": "Verified implementation baseline for the explicitly approved basic Doppler contract on the documented Ubuntu/WSL scope. All ten gates have scoped evidence; historical failures and unsupported boundaries remain retained.",
-  "scope_amendment": "User approved basic Doppler writes/current-state confirmation. Strong provider CAS/fencing/terminal API requirements are superseded."
+  "scope_amendment": "User approved basic Doppler writes/current-state confirmation. Strong provider CAS/fencing/terminal API requirements are superseded.",
+  "current_review": {
+    "record": "docs/comprehensive-review-2026-10-15.json",
+    "tests": 446,
+    "seconds": 144.07,
+    "passed": true,
+    "changes": "Fixed CLI host exit-code mapping and rejected extra positional actions; aligned canonical basic Doppler instruction; added verified user tutorial.",
+    "external_services_replayed": false
+  }
 }

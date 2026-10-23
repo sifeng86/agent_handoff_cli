@@ -1,0 +1,136 @@
+{
+  "date": "2026-10-15",
+  "baseline_commit": "3187e6e",
+  "status": "review_completed_fixes_and_tutorial_verified",
+  "findings": [
+    {
+      "id": "R1",
+      "severity": "P2",
+      "file": "src/agent_handoff/cli.py",
+      "issue": "Host unknown/not_ready result incorrectly returned exit zero",
+      "resolution": "Apply shared exit_code mapping after every successful dispatch",
+      "status": "fixed"
+    },
+    {
+      "id": "R2",
+      "severity": "P2",
+      "file": "src/agent_handoff/cli.py",
+      "issue": "Unexpected positional action ignored by commands such as release",
+      "resolution": "Reject unsupported positional action before runtime/backend access",
+      "status": "fixed"
+    },
+    {
+      "id": "R3",
+      "severity": "P2",
+      "file": "template/.agent/instructions.md",
+      "issue": "Canonical instructions falsely declared basic Doppler upload unsupported",
+      "resolution": "Describe explicit grant, basic write/readback/resolve behavior and limits",
+      "status": "fixed"
+    },
+    {
+      "id": "R4",
+      "severity": "P3",
+      "file": "README.md",
+      "issue": "Missing first-use template seeding instructions",
+      "resolution": "Link detailed Traditional Chinese tutorial with executable local two-session walkthrough",
+      "status": "fixed"
+    }
+  ],
+  "targeted_tests": {
+    "command": "PYTHONPATH=src:tests python3 -m unittest test_foundation test_host_recovery_cli -q",
+    "tests": 18,
+    "seconds": 0.511,
+    "passed": true
+  },
+  "acceptance_inventory": {
+    "unique_rows": 63,
+    "missing_ids": [],
+    "missing_test_functions": [],
+    "schema_json_files": 34
+  },
+  "installation_smokes": {
+    "artifact_root": "/tmp/agent-handoff-package-3pdoxt1_",
+    "wheel_passed": true,
+    "sdist_passed": true,
+    "resource_assets": 42,
+    "flows": [
+      "init/acquire/recover-session/release",
+      "host backup/verify-backup/restore/resolve",
+      "authority transition and source fencing"
+    ],
+    "changed_host_categories": [],
+    "unverifiable_host_categories": [
+      "services",
+      "users_security"
+    ]
+  },
+  "tutorial": {
+    "path": "docs/agent-operations.zh-TW.md",
+    "runner": "scripts/tutorial_smoke.py",
+    "guide_sha256": "17ed0e17b20e762757d0f6b71ba07fa831eaebc7d46be82f3d47a78f67e23f03",
+    "bash_blocks": 7,
+    "wheel_passed": true,
+    "sdist_passed": true,
+    "verified": [
+      "two independent sessions",
+      "explicit template seeding",
+      "Plan/checkpoint/handoff/done",
+      "final owner absent, state idle and Plan DONE",
+      "original source and main preserved"
+    ],
+    "external_calls": 0,
+    "original_path": "docs/user-guide.zh-TW.md",
+    "previously_verified_guide_sha256": "4ac08f39ef1e7b9ca015f323199d763b377fc191517f5ada49f2bfb063d19403"
+  },
+  "full_suite": {
+    "command": "PYTHONPATH=src:tests python3 -m unittest discover -s tests -q",
+    "executed_this_review": true,
+    "tests": 446,
+    "seconds": 144.07,
+    "passed": true,
+    "explicit_sandbox_authorization": true
+  },
+  "live_services_this_review": {
+    "github": 0,
+    "doppler": 0,
+    "paid_model_calls": 0
+  },
+  "remaining": [],
+  "current_top_level_dist": "Updated reviewed wheel and documentation-refreshed sdist; final hashes are external in dist/package-verification.json. Previous artifacts retained under dist/previous-comprehensive-review.",
+  "payload_comparison": {
+    "matches_current_and_installed": true,
+    "runtime_modules": 38,
+    "scripts": 25,
+    "test_and_fixture_files": 88,
+    "schemas": 34,
+    "template_assets": 8,
+    "note": "Final source archive documentation refresh preserves every installed runtime/helper/test/schema/template byte."
+  },
+  "documentation_audience_update": {
+    "reason": "User confirmed Agent operates the CLI; human guide must describe natural-language interaction only.",
+    "user_guide": "docs/user-guide.zh-TW.md",
+    "user_guide_lines": 109,
+    "agent_manual": "docs/agent-operations.zh-TW.md",
+    "demo_blocks_unchanged": true,
+    "relocated_runner_installed_wheel_passed": true,
+    "runtime_changed": false,
+    "full_suite_repeated": false,
+    "onboarding_cases": [
+      "New user discovers GitHub tool; Agent installs and initializes a new target project.",
+      "New user discovers GitHub tool; Agent preserves in-progress work and adopts an existing project."
+    ],
+    "canonical_user_instructions": "docs/user-guide.zh-TW.md",
+    "example_project": "hahaha",
+    "example_path": "~/workspace/hahaha",
+    "onboarding_scope": "Install, adopt, verify, then stop and report. Development is a separate user instruction.",
+    "fixed_input_example_matches": true,
+    "user_and_agent_report_blocks_identical": true,
+    "report_rules": "Agent instruction contract; completion requires observed preservation, setup, saved/read-back progress and released ownership; no natural-language validator added.",
+    "updated_template_install_smokes": {
+      "artifact_root": "/tmp/agent-handoff-package-tsp0omir",
+      "wheel_passed": true,
+      "sdist_passed": true,
+      "changed_host_categories": []
+    }
+  }
+}

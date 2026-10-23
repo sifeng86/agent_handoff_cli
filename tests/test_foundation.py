@@ -76,6 +76,21 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(code, 2)
         self.assertEqual(json.loads(output.getvalue())["code_publication"], "not_attempted")
 
+    def test_unexpected_positional_action_is_rejected_before_backend_or_runtime(self):
+        commands = ("status", "inspect", "init", "acquire", "recover-session", "takeover",
+                    "checkpoint", "handoff", "release", "done", "resume", "recover-ownership")
+        for command in commands:
+            with self.subTest(command=command), patch("agent_handoff.cli.inspect") as inspect_backend, \
+                    patch("agent_handoff.publication.Runtime") as runtime:
+                output = io.StringIO()
+                with contextlib.redirect_stdout(output):
+                    code = main([command, "unexpected-action", "--authority", "/tmp",
+                                 "--publication-ref", "refs/heads/publication"])
+                self.assertEqual(code, 2)
+                self.assertEqual(json.loads(output.getvalue())["code_publication"], "not_attempted")
+                inspect_backend.assert_not_called()
+                runtime.assert_not_called()
+
 
 class PrivateTests(unittest.TestCase):
     def test_durable_private_record(self):

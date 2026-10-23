@@ -1,5 +1,7 @@
 # Package verification
 
+Latest review: [2026-10-15 comprehensive verification](comprehensive-review-2026-10-15.json) records 446 passing tests, new wheel/sdist installation smokes, and all seven tutorial blocks executed against both installed CLIs. Current runtime/template fixes are included in the delivered artifacts; final documentation-only source refresh was byte-compared. Hashes: `dist/package-verification.json`. Earlier release narratives below are historical.
+
 Current basic release: [444 passing tests and installed-package evidence](basic-release-verification.json), plus [real isolated Doppler acceptance](doppler-basic-evidence.json). Current wheel and source installation smokes passed. Final documentation-only source refresh preserves every verified runtime/helper/test/schema/template byte; delivery hashes are external in `dist/package-verification.json`. The earlier batch narratives below are historical, including their then-open gates.
 
 `scripts/package_smoke.py` builds a staged source tree using the pinned
